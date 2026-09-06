@@ -1,0 +1,57 @@
+name: Render Stock Videos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "remotion.config.ts"
+  workflow_dispatch:
+    inputs:
+      composition:
+        description: "Composition ID"
+        required: true
+        default: "LowerThird"
+      codec:
+        description: "Video codec"
+        required: true
+        default: "prores"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Bundle
+        run: npx remotion bundle
+
+      - name: Render Composition
+        run: |
+          npx remotion render \
+            ${{ inputs.composition }} \
+            out/${{ inputs.composition }}.mov \
+            --codec=${{ inputs.codec }} \
+            --width=3840 \
+            --height=2160 \
+            --fps=30
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-video
+          path: "out/**/*.*"

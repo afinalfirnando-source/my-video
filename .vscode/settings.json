@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "emmet.includeLanguages": {
+    "typescriptreact": "html"
+  },
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "remotion.openStudioOnStartup": true
+}

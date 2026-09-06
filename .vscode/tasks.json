@@ -1,0 +1,37 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Studio Dev Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "isBuildCommand": false,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Render 4K ProRes (LowerThird)",
+      "type": "shell",
+      "command": "npm run render",
+      "args": ["LowerThird", "out/lowerc-third-prores.mov", "--codec=prores", "--width=3840", "--height=2160", "--fps=30", "--port=3001"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Render 4K H.264 (LowerThird)",
+      "type": "shell",
+      "command": "npm run render",
+      "args": ["LowerThird", "out/lowerc-third-h264.mp4", "--codec=h264", "--width=3840", "--height=2160", "--fps=30", "--port=3001"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Render 4K H.264 (LowerThird)",
+      "type": "shell",
+      "command": "npm run render",
+      "args": ["LowerThird", "out/lowerc-third-h264.mp4", "--codec=h264", "--width=3840", "--height=2160", "--fps=30", "--port=3001"],
+  ]
+}
