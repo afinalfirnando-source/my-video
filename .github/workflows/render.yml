@@ -11,11 +11,11 @@ on:
       composition:
         description: "Composition ID"
         required: true
-        default: "LowerThird"
+        default: "VortexWeb"
       codec:
         description: "Video codec"
         required: true
-        default: "prores"
+        default: "h264"
 
 jobs:
   render:
@@ -44,11 +44,11 @@ jobs:
         run: |
           npx remotion render \
             ${{ inputs.composition }} \
-            out/${{ inputs.composition }}.mov \
+            out/${{ inputs.composition }}.mp4 \
             --codec=${{ inputs.codec }} \
             --width=3840 \
             --height=2160 \
-            --fps=30
+            --fps=60
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
