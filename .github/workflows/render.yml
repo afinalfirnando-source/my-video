@@ -14,7 +14,7 @@ on:
         default: "CyberCityLoop-Professional-1"
       codec:
         description: "Video codec"
-        required: true
+        required: false
         default: "h264"
 
 jobs:
