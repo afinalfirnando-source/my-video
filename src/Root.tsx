@@ -69,8 +69,9 @@ const fluidDefault: FluidChromaticProps = {
   flowSpeed: 0.8,
   turbulence: 1,
   opacity: 0.6,
-  particleCount: 100,
-  waveCount: 6,
+  particleCount: 500,
+  waveCount: 10,
+  noiseDensity: 0.02,
 };
 
 const matrixDefault: BinaryMatrixProps = {

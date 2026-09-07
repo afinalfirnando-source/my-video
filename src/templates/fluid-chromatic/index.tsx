@@ -19,8 +19,9 @@ export const FluidChromatic: React.FC<FluidChromaticProps> = ({
   flowSpeed = 0.8,
   turbulence = 1,
   opacity = 0.6,
-  particleCount = 100,
-  waveCount = 6,
+  particleCount = 500,
+  waveCount = 10,
+  noiseDensity = 0.02,
 }) => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
@@ -56,15 +57,15 @@ export const FluidChromatic: React.FC<FluidChromaticProps> = ({
     ctx.shadowColor = primaryColor;
 
     for (let i = 0; i < waveCount; i++) {
-      const waveTime = time * Math.PI * 2 * flowSpeed + i * 2;
-      const amplitude = height * 0.2 * turbulence;
-      const frequency = 0.005 + i * 0.003;
+      const waveTime = time * Math.PI * 2 * flowSpeed + i * 1.5;
+      const amplitude = height * 0.15 * turbulence;
+      const frequency = 0.008 + i * 0.004;
 
-      ctx.strokeStyle = `hsl(${((hue1 + i * 40) % 360)}, 90%, 50%)`;
-      ctx.lineWidth = 120 + i * 60;
+      ctx.strokeStyle = `hsl(${((hue1 + i * 30) % 360)}, 90%, 50%)`;
+      ctx.lineWidth = 60 + i * 30;
       ctx.beginPath();
 
-      for (let x = 0; x < width; x += 3) {
+      for (let x = 0; x < width; x += 2) {
         const y = (height / 2) + Math.sin((x * frequency + waveTime)) * amplitude;
 
         if (x === 0) {
@@ -76,42 +77,77 @@ export const FluidChromatic: React.FC<FluidChromaticProps> = ({
       ctx.stroke();
     }
 
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0.9;
     ctx.shadowBlur = 30;
     ctx.shadowColor = secondaryColor;
 
-    for (let i = 0; i < 20; i++) {
-      const radius = 50 + i * 60 + Math.sin(circleTime + i) * 30;
-      const hue = (hue1 + i * 30) % 360;
+    for (let i = 0; i < 30; i++) {
+      const radius = 30 + i * 40 + Math.sin(circleTime * 0.7 + i * 0.5) * 20;
+      const hue = (hue1 + i * 20) % 360;
 
-      ctx.globalAlpha = 0.3 + i * 0.03;
+      ctx.globalAlpha = 0.25 + i * 0.02;
       ctx.strokeStyle = `hsl(${hue}, 90%, 60%)`;
-      ctx.lineWidth = 5 + i * 2;
-      ctx.shadowBlur = 25;
+      ctx.lineWidth = 3 + i * 1;
+      ctx.shadowBlur = 20;
       ctx.shadowColor = `hsl(${hue}, 90%, 60%)`;
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.stroke();
     }
 
-    ctx.globalAlpha = 0.8;
-    ctx.shadowBlur = 15;
+    ctx.globalAlpha = 0.9;
+    ctx.shadowBlur = 20;
     ctx.shadowColor = primaryColor;
     for (let i = 0; i < particleCount; i++) {
-      const px = seeded(i * 13 + time * 100) * width;
-      const py = seeded(i * 17 + time * 80) * height;
-      const size = seeded(i * 19) * 4 + 1;
-      const hue = (hue1 + seeded(i * 23) * 180) % 360;
+      const px = (seeded(i * 13 + time * 50) * width);
+      const py = (seeded(i * 17 + time * 40) * height);
+      const size = seeded(i * 19) * 5 + 1;
+      const hue = (hue1 + seeded(i * 23) * 360) % 360;
+      const alpha = seeded(i * 29) * 0.6 + 0.1;
 
-      ctx.globalAlpha = seeded(i * 29) * 0.5 + 0.2;
+      ctx.globalAlpha = alpha;
       ctx.fillStyle = `hsl(${hue}, 90%, 50%)`;
       ctx.beginPath();
       ctx.arc(px, py, size, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.globalAlpha = alpha * 0.4;
+      ctx.beginPath();
+      ctx.arc(px, py, size * 2, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 0.15;
+    ctx.fillStyle = "#FFFFFF";
+    const noiseCount = Math.floor(width * height * noiseDensity / 100);
+    for (let i = 0; i < noiseCount; i++) {
+      const px = seeded(i * 31 + time * 100) * width;
+      const py = seeded(i * 37 + time * 80) * height;
+      const ns = seeded(i * 41) * 2 + 0.5;
+
+      ctx.globalAlpha = seeded(i * 43) * 0.2;
+      ctx.fillRect(px, py, ns, ns);
+    }
+
+    ctx.globalAlpha = 0.3;
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = secondaryColor;
+    for (let i = 0; i < 100; i++) {
+      const sx = seeded(i * 53 + time * 60) * width;
+      const sy = seeded(i * 59 + time * 40) * height;
+      const ss = seeded(i * 61) * 3 + 1;
+      const sh = (seeded(i * 67) * 360) % 360;
+
+      ctx.globalAlpha = seeded(i * 71) * 0.3 + 0.1;
+      ctx.fillStyle = `hsl(${sh}, 90%, 60%)`;
+      ctx.beginPath();
+      ctx.arc(sx, sy, ss, 0, Math.PI * 2);
       ctx.fill();
     }
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;
+    ctx.filter = "none";
   }
 
   return (

@@ -101,6 +101,8 @@ export const FractalZoom: React.FC<FractalZoomProps> = ({
         let iteration = 0;
         let xTemp = zx;
         let yTemp = zy;
+        let orbitDist = Infinity;
+        let orbitAngle = 0;
 
         while (xTemp * xTemp + yTemp * yTemp <= 4 && iteration < maxIterations) {
           const xNew = xTemp * xTemp - yTemp * yTemp;
@@ -111,11 +113,35 @@ export const FractalZoom: React.FC<FractalZoomProps> = ({
             yTemp = 2 * xTemp * yTemp + (py + centerY);
             xTemp = xNew + (px + centerX);
           }
+
+          if (orbitTrap) {
+            const dist = Math.min(Math.abs(xTemp), Math.abs(yTemp));
+            if (dist < orbitDist) {
+              orbitDist = dist;
+              orbitAngle = Math.atan2(yTemp, xTemp);
+            }
+          }
+
           iteration++;
         }
 
-        const t = iteration / maxIterations;
-        const [r, g, b] = getColor(t * intensity);
+        const iterT = 0.15 + 1.85 * (iteration / maxIterations);
+        const smoothT = iteration - Math.log2(Math.log2(xTemp * xTemp + yTemp * yTemp));
+        const t = (smoothT + 0.5 * iterT) / maxIterations;
+
+        let [r, g, b] = [0, 0, 0];
+        if (iteration < maxIterations) {
+          if (orbitTrap) {
+            const hue = (orbitAngle / (Math.PI * 2) + 0.5) * 360;
+            const sat = 80 + orbitDist * 40;
+            const light = 50 + orbitDist * 30;
+            r = Math.min(255, sat * Math.cos(hue * Math.PI / 180) * 0.5 + 128);
+            g = Math.min(255, sat * Math.sin(hue * Math.PI / 180) * 0.5 + 128);
+            b = Math.min(255, light);
+          } else {
+            [r, g, b] = getColor(t * intensity);
+          }
+        }
         const idx = (y * width + x) * 4;
 
         if (idx < data.length - 3) {
