@@ -10,7 +10,7 @@ on:
     inputs:
       composition:
         description: "Composition ID"
-        required: false
+        required: true
         default: "CyberCityLoop-Professional-1"
       codec:
         description: "Video codec"
@@ -18,17 +18,8 @@ on:
         default: "h264"
 
 jobs:
-  render-all:
+  render:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        composition:
-          - "CyberCityLoop-Professional-1"
-          - "AuroraDreams-Professional-1"
-          - "CosmicVoyage-Professional-1"
-          - "OceanRealm-Professional-1"
-          - "SolarTempest-Professional-1"
-        codec: ["h264", "prores"]
     
     steps:
       - uses: actions/checkout@v4
@@ -49,12 +40,12 @@ jobs:
       - name: Bundle
         run: npx remotion bundle
 
-      - name: Render ${{ matrix.composition }}
+      - name: Render ${{ inputs.composition }}
         run: |
           npx remotion render \
-            "${{ matrix.composition }}" \
-            "out/${{ matrix.composition }}.mp4" \
-            --codec="${{ matrix.codec }}" \
+            "${{ inputs.composition }}" \
+            "out/${{ inputs.composition }}.mp4" \
+            --codec="${{ inputs.codec }}" \
             --crf=18 \
             --width=3840 \
             --height=2160 \
@@ -63,5 +54,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.composition }}-${{ matrix.codec }}
-          path: "out/${{ matrix.composition }}.mp4"
+          name: ${{ inputs.composition }}-${{ inputs.codec }}
+          path: "out/${{ inputs.composition }}.mp4"
