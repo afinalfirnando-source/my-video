@@ -25,11 +25,12 @@ const seeded = (seed: number): number => {
 export const QuantumParticles: React.FC<QuantumParticlesProps> = ({
   primaryColor = "#00F0FF",
   secondaryColor = "#FF00FF",
-  particleCount = 150,
-  particleSize = 3,
-  glowIntensity = 0.8,
-  connectionDistance = 120,
-  driftSpeed = 0.5,
+  particleCount = 800,
+  particleSize = 4,
+  glowIntensity = 1,
+  connectionDistance = 200,
+  driftSpeed = 0.8,
+  trailIntensity = 0.3,
 }) => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
@@ -56,15 +57,12 @@ export const QuantumParticles: React.FC<QuantumParticlesProps> = ({
   const ctx = canvasRef.current?.getContext("2d");
 
   if (ctx) {
-    ctx.clearRect(0, 0, width, height);
-
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, width, height);
 
     ctx.save();
-    ctx.shadowBlur = 20 * glowIntensity;
+    ctx.shadowBlur = 30 * glowIntensity;
     ctx.shadowColor = primaryColor;
-    ctx.globalAlpha = 0.9;
 
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
@@ -78,23 +76,38 @@ export const QuantumParticles: React.FC<QuantumParticlesProps> = ({
 
       const pulse = 0.7 + Math.sin(time * Math.PI * 2 + p.phase) * 0.3;
 
+      const trailX = p.x + Math.sin(time * Math.PI * 2 + p.phase) * 30;
+      const trailY = p.y + Math.cos(time * Math.PI * 2 + p.phase) * 30;
+      ctx.globalAlpha = trailIntensity * 0.3;
       ctx.fillStyle = primaryColor;
-      ctx.globalAlpha = pulse * 0.8;
+      ctx.beginPath();
+      ctx.arc(trailX, trailY, p.size * pulse * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.globalAlpha = pulse * 0.9;
+      ctx.fillStyle = primaryColor;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size * pulse, 0, Math.PI * 2);
       ctx.fill();
 
+      ctx.globalAlpha = pulse * 0.5;
       ctx.fillStyle = secondaryColor;
-      ctx.globalAlpha = pulse * 0.4;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * 0.5 * pulse, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, p.size * 0.6 * pulse, 0, Math.PI * 2);
       ctx.fill();
+
+      const ringPulse = 1 + Math.sin(time * Math.PI * 2 + p.phase) * 0.2;
+      ctx.globalAlpha = pulse * 0.2;
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * 3 * ringPulse, 0, Math.PI * 2);
+      ctx.stroke();
     }
 
-    ctx.globalAlpha = 0.6;
+    ctx.globalAlpha = 0.8;
     ctx.strokeStyle = primaryColor;
-    ctx.lineWidth = 1;
-    ctx.shadowBlur = 15 * glowIntensity;
+    ctx.lineWidth = 2;
 
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
@@ -104,7 +117,7 @@ export const QuantumParticles: React.FC<QuantumParticlesProps> = ({
 
         if (dist < connectionDistance) {
           const alpha = 1 - dist / connectionDistance;
-          ctx.globalAlpha = alpha * 0.5;
+          ctx.globalAlpha = alpha * 0.6;
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);

@@ -46,6 +46,7 @@ jobs:
             ${{ inputs.composition }} \
             out/${{ inputs.composition }}.mp4 \
             --codec=${{ inputs.codec }} \
+            --crf=18 \
             --width=3840 \
             --height=2160 \
             --fps=60

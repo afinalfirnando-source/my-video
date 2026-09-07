@@ -44,10 +44,12 @@ const colorSchemes: Record<string, (t: number) => [number, number, number]> = {
 export const FractalZoom: React.FC<FractalZoomProps> = ({
   colorScheme = "fire",
   zoomSpeed = 1.0,
-  maxIterations = 60,
+  maxIterations = 100,
   intensity = 0.8,
   fractalType = "mandelbrot",
   backgroundColor = "#000000",
+  glowIntensity = 0.5,
+  orbitTrap = true,
 }) => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
@@ -70,7 +72,7 @@ export const FractalZoom: React.FC<FractalZoomProps> = ({
     const centerY = 0.113009 + offsetY;
 
     const maxDist = Math.max(width, height);
-    const step = 2;
+    const step = 1;
 
     for (let y = 0; y < height; y += step) {
       for (let x = 0; x < width; x += step) {
@@ -122,40 +124,22 @@ export const FractalZoom: React.FC<FractalZoomProps> = ({
           data[idx + 2] = b;
           data[idx + 3] = 255;
         }
-
-        if (x + step < width) {
-          const idx2 = (y * width + x + step) * 4;
-          if (idx2 < data.length - 3) {
-            data[idx2] = r;
-            data[idx2 + 1] = g;
-            data[idx2 + 2] = b;
-            data[idx2 + 3] = 255;
-          }
-        }
-
-        if (y + step < height) {
-          const idx3 = ((y + step) * width + x) * 4;
-          if (idx3 < data.length - 3) {
-            data[idx3] = r;
-            data[idx3 + 1] = g;
-            data[idx3 + 2] = b;
-            data[idx3 + 3] = 255;
-          }
-
-          if (x + step < width) {
-            const idx4 = ((y + step) * width + x + step) * 4;
-            if (idx4 < data.length - 3) {
-              data[idx4] = r;
-              data[idx4 + 1] = g;
-              data[idx4 + 2] = b;
-              data[idx4 + 3] = 255;
-            }
-          }
-        }
       }
     }
 
     ctx.putImageData(imageData, 0, 0);
+
+    if (glowIntensity > 0) {
+      ctx.globalAlpha = glowIntensity * 0.3;
+      ctx.filter = "blur(3px)";
+      ctx.globalCompositeOperation = "lighter";
+      ctx.shadowBlur = 40;
+      ctx.shadowColor = "#00F0FF";
+      ctx.drawImage(canvasRef.current!, 1, 1, width - 2, height - 2);
+      ctx.filter = "none";
+      ctx.globalCompositeOperation = "source-over";
+      ctx.shadowBlur = 0;
+    }
   }
 
   return (

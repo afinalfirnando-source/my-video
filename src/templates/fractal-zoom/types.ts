@@ -7,6 +7,8 @@ export const FractalZoomPropsSchema = z.object({
   intensity: z.number().default(0.8),
   fractalType: z.enum(["mandelbrot", "julia"]).default("mandelbrot"),
   backgroundColor: z.string().default("#000000"),
+  glowIntensity: z.number().default(0.5),
+  orbitTrap: z.boolean().default(true),
 });
 
 export type FractalZoomProps = z.infer<typeof FractalZoomPropsSchema>;

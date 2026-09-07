@@ -11,11 +11,13 @@ const TOTAL_FRAMES = 900;
 export const GeometricGrid: React.FC<GeometricGridProps> = ({
   gridColor = "#00F0FF",
   backgroundColor = "#000000",
-  gridSize = 12,
+  gridSize = 30,
   rotationSpeed = 1,
   morphSpeed = 1,
-  depth = 20,
+  depth = 40,
   lineWidth = 2,
+  secondaryColor = "#FF00FF",
+  pulseIntensity = 0.5,
 }) => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
@@ -45,22 +47,31 @@ export const GeometricGrid: React.FC<GeometricGridProps> = ({
 
     ctx.strokeStyle = gridColor;
     ctx.lineWidth = lineWidth;
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 20;
     ctx.shadowColor = gridColor;
 
-    for (let i = -depth / 2; i <= depth / 2; i++) {
-      for (let j = -depth / 2; j <= depth / 2; j++) {
-        const z = i * spacing * morphProgress + j * spacing * (1 - morphProgress);
+    for (let i = -depth; i <= depth; i++) {
+      for (let j = -depth; j <= depth; j++) {
+        const z = (i * spacing * morphProgress + j * spacing * (1 - morphProgress)) * 0.5;
         const scale = perspective / (perspective + z);
 
-        const x = (cx + j * spacing) * scale;
-        const y = (cy + i * spacing) * scale;
+        const x = (cx + j * spacing * 0.8) * scale;
+        const y = (cy + i * spacing * 0.8) * scale;
 
-        const size = spacing * scale * 0.8;
-        const alpha = scale * 0.8;
+        const size = spacing * scale * 0.6;
+        const alpha = scale * 0.7;
 
-        ctx.globalAlpha = Math.max(0.1, alpha);
+        ctx.globalAlpha = Math.max(0.05, alpha);
+        ctx.strokeStyle = i % 3 === 0 ? gridColor : secondaryColor;
+        ctx.lineWidth = lineWidth * scale;
         ctx.strokeRect(x - size / 2, y - size / 2, size, size);
+
+        if (scale > 0.5) {
+          const pulse = 1 + Math.sin(time * Math.PI * 2 + i * 0.1 + j * 0.1) * pulseIntensity;
+          ctx.globalAlpha = Math.max(0.05, alpha * 0.5);
+          ctx.fillStyle = gridColor;
+          ctx.fillRect(x - size / pulse / 2, y - size / pulse / 2, size / pulse, size / pulse);
+        }
       }
     }
 
@@ -80,6 +91,20 @@ export const GeometricGrid: React.FC<GeometricGridProps> = ({
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 0.4;
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = secondaryColor;
+    for (let i = 0; i < 10; i++) {
+      const radius = Math.min(width, height) * 0.1 + i * Math.min(width, height) * 0.08;
+      const pulse = 0.8 + Math.sin(time * Math.PI * 2 + i) * 0.2;
+      ctx.globalAlpha = 0.2 + i * 0.03;
+      ctx.strokeStyle = i % 2 === 0 ? gridColor : secondaryColor;
+      ctx.lineWidth = 2 * pulse;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.stroke();
     }
 

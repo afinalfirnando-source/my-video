@@ -43,47 +43,56 @@ const vortexDefault: VortexWebProps = {
 const quantumDefault: QuantumParticlesProps = {
   primaryColor: "#00F0FF",
   secondaryColor: "#FF00FF",
-  particleCount: 150,
-  particleSize: 3,
-  glowIntensity: 0.8,
-  connectionDistance: 120,
-  driftSpeed: 0.5,
+  particleCount: 800,
+  particleSize: 4,
+  glowIntensity: 1,
+  connectionDistance: 200,
+  driftSpeed: 0.8,
+  trailIntensity: 0.3,
 };
 
 const geometricDefault: GeometricGridProps = {
   gridColor: "#00F0FF",
   backgroundColor: "#000000",
-  gridSize: 12,
+  gridSize: 30,
   rotationSpeed: 1,
   morphSpeed: 1,
-  depth: 20,
+  depth: 40,
   lineWidth: 2,
+  secondaryColor: "#FF00FF",
+  pulseIntensity: 0.5,
 };
 
 const fluidDefault: FluidChromaticProps = {
   primaryColor: "#00F0FF",
   secondaryColor: "#FF00FF",
-  flowSpeed: 0.5,
-  turbulence: 0.8,
-  opacity: 0.4,
+  flowSpeed: 0.8,
+  turbulence: 1,
+  opacity: 0.6,
+  particleCount: 100,
+  waveCount: 6,
 };
 
 const matrixDefault: BinaryMatrixProps = {
   textColor: "#00FF88",
   backgroundColor: "#000000",
-  rainDensity: 0.5,
-  speed: 0.8,
-  fontSize: 24,
-  glowIntensity: 0.6,
+  rainDensity: 1,
+  speed: 1,
+  fontSize: 20,
+  glowIntensity: 1,
+  characterSet: "0123456789ABCDEF",
+  secondaryColor: "#00F0FF",
 };
 
 const fractalDefault: FractalZoomProps = {
   colorScheme: "fire",
   zoomSpeed: 1.0,
-  maxIterations: 80,
+  maxIterations: 100,
   intensity: 0.8,
   fractalType: "mandelbrot",
   backgroundColor: "#000000",
+  glowIntensity: 0.3,
+  orbitTrap: true,
 };
 
 export const RemotionRoot: React.FC = () => {
