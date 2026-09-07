@@ -1,26 +1,31 @@
-name: Render Professional Video Series
+name: Render Background Animations
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - "src/**"
       - "remotion.config.ts"
   workflow_dispatch:
     inputs:
       composition:
-        description: "Composition ID"
+        description: "Composition ID (leave empty to render all)"
         required: false
-        default: "CyberCityLoop-Professional-1"
+        default: ""
       codec:
         description: "Video codec"
         required: false
         default: "h264"
 
 jobs:
-  render:
+  render-all:
+    name: Render All Compositions
     runs-on: ubuntu-latest
-    
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.composition == '') }}
+    strategy:
+        matrix:
+          composition: ["NeuralMesh", "QuantumFoam", "HyperbolicTiling", "VolumetricCloudscape", "CrystalGrowth"]
+
     steps:
       - uses: actions/checkout@v4
 
@@ -40,27 +45,12 @@ jobs:
       - name: Bundle
         run: npx remotion bundle
 
-      - name: Determine composition from push
-        id: detect
-        run: |
-          # Get the changed file from the push
-          CHANGED_FILE=$(git diff --name-only HEAD~1 HEAD | grep "src/Root" | head -1)
-          if [ -n "$CHANGED_FILE" ]; then
-            # Extract composition name from filename
-            COMPOSITION=$(basename "$CHANGED_FILE" .tsx | sed 's/Root-//')
-            echo "composition=$COMPOSITION" >> $GITHUB_OUTPUT
-          else
-            echo "composition=CyberCityLoop-Professional-1" >> $GITHUB_OUTPUT
-          fi
-          # Use default codec
-          echo "codec=h264" >> $GITHUB_OUTPUT
-
-      - name: Render ${{ steps.detect.outputs.composition }}
+      - name: Render ${{ matrix.composition }}
         run: |
           npx remotion render \
-            "${{ steps.detect.outputs.composition }}" \
-            "out/${{ steps.detect.outputs.composition }}.mp4" \
-            --codec="${{ steps.detect.outputs.codec }}" \
+            "${{ matrix.composition }}" \
+            "out/${{ matrix.composition }}.mp4" \
+            --codec="${{ inputs.codec || 'h264' }}" \
             --crf=18 \
             --width=3840 \
             --height=2160 \
@@ -69,5 +59,46 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.detect.outputs.composition }}-${{ steps.detect.outputs.codec }}
-          path: "out/${{ steps.detect.outputs.composition }}.mp4"
+          name: "${{ matrix.composition }}-video"
+          path: "out/${{ matrix.composition }}.mp4"
+
+  render-single:
+    name: Render Single Composition
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.composition != '' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Bundle
+        run: npx remotion bundle
+
+      - name: Render ${{ inputs.composition }}
+        run: |
+          npx remotion render \
+            "${{ inputs.composition }}" \
+            "out/${{ inputs.composition }}.mp4" \
+            --codec="${{ inputs.codec || 'h264' }}" \
+            --crf=18 \
+            --width=3840 \
+            --height=2160 \
+            --fps=60
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ inputs.composition }}-video"
+          path: "out/${{ inputs.composition }}.mp4"

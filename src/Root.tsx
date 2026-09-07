@@ -1,19 +1,29 @@
 // Original Root.tsx with 5 new professional video concepts
 import { Composition } from "remotion";
-import { CyberGrid } from "./templates/cyber-grid/index.tsx";
-import { DigitalAurora } from "./templates/digital-aurora/index.tsx";
-import { NebulaDrift } from "./templates/nebula-drift/index.tsx";
-import { OceanicDepths } from "./templates/oceanic-depths/index.tsx";
-import { SolarFlare } from "./templates/solar-flare/index.tsx";
+import { CyberGrid } from "./templates/cyber-grid";
+import { DigitalAurora } from "./templates/digital-aurora";
+import { NebulaDrift } from "./templates/nebula-drift";
+import { OceanicDepths } from "./templates/oceanic-depths";
+import { SolarFlare } from "./templates/solar-flare";
 
-import { CyberGridPropsSchema } from "./templates/cyber-grid/types.ts";
-import { DigitalAuroraPropsSchema } from "./templates/digital-aurora/types.ts";
-import { NebulaDriftPropsSchema } from "./templates/nebula-drift/types.ts";
-import { OceanicDepthsPropsSchema } from "./templates/oceanic-depths/types.ts";
-import { SolarFlarePropsSchema } from "./templates/solar-flare/types.ts";
+import { CyberGridPropsSchema } from "./templates/cyber-grid/types";
+import { DigitalAuroraPropsSchema } from "./templates/digital-aurora/types";
+import { NebulaDriftPropsSchema } from "./templates/nebula-drift/types";
+import { OceanicDepthsPropsSchema } from "./templates/oceanic-depths/types";
+import { SolarFlarePropsSchema } from "./templates/solar-flare/types";
+import { NeuralMesh } from "./templates/neural-mesh";
+import { NeuralMeshPropsSchema } from "./templates/neural-mesh/types";
+import { QuantumFoam } from "./templates/quantum-foam";
+import { QuantumFoamPropsSchema } from "./templates/quantum-foam/types";
+import { HyperbolicTiling } from "./templates/hyperbolic-tiling";
+import { HyperbolicTilingPropsSchema } from "./templates/hyperbolic-tiling/types";
+import { VolumetricCloudscape } from "./templates/volumetric-cloudscape";
+import { VolumetricCloudscapePropsSchema } from "./templates/volumetric-cloudscape/types";
+import { CrystalGrowth } from "./templates/crystal-growth";
+import { CrystalGrowthPropsSchema } from "./templates/crystal-growth/types";
 
 // Professional video series with diverse themes
-const videoSeries = [
+const videoSeries: any[] = [
   // Episode 1: Cyberpunk City - Digital urban exploration
   {
     id: "CyberCityLoop-Professional-1",
@@ -122,6 +132,112 @@ const videoSeries = [
     category: "Natural Phenomena",
     description: "Solar storm with explosive plasma and magnetic interactions",
   },
+  {
+    id: "NeuralMesh",
+    component: NeuralMesh,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: NeuralMeshPropsSchema,
+    defaultProps: {
+      nodeColor: "#00F0FF",
+      connectionColor: "#8A2BE2",
+      pulseColor: "#FF00FF",
+      nodeCount: 80,
+      layerCount: 5,
+      pulseSpeed: 0.8,
+      networkDensity: 0.7,
+      glowIntensity: 0.8,
+    },
+    category: "Technology",
+    description: "Neural network visualization with flowing data and synapses",
+  },
+  {
+    id: "QuantumFoam",
+    component: QuantumFoam,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: QuantumFoamPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      particleDensity: 400,
+      waveIntensity: 0.7,
+      entanglementStrength: 0.8,
+      interferenceScale: 0.5,
+      glowIntensity: 0.7,
+      fieldOpacity: 0.6,
+    },
+    category: "Science",
+    description: "Quantum field visualization with entangled particles and interference",
+  },
+  {
+    id: "HyperbolicTiling",
+    component: HyperbolicTiling,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: HyperbolicTilingPropsSchema,
+    defaultProps: {
+      primaryColor: "#8A2BE2",
+      secondaryColor: "#00F0FF",
+      tertiaryColor: "#FF69B4",
+      rotationSpeed: 0.3,
+      zoomSpeed: 0.2,
+      tileDensity: 7,
+      glowIntensity: 0.8,
+      colorShift: 0.5,
+    },
+    category: "Mathematics",
+    description: "Non-Euclidean geometry with rotating hyperbolic tilings",
+  },
+  {
+    id: "VolumetricCloudscape",
+    component: VolumetricCloudscape,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: VolumetricCloudscapePropsSchema,
+    defaultProps: {
+      skyTopColor: "#001133",
+      skyBottomColor: "#002266",
+      cloudColor: "#FFFFFF",
+      sunColor: "#FFD700",
+      cloudDensity: 0.7,
+      sunIntensity: 0.8,
+      rayCount: 12,
+      windSpeed: 0.3,
+      layerCount: 3,
+    },
+    category: "Nature",
+    description: "3D volumetric clouds with sun rays and atmospheric lighting",
+  },
+  {
+    id: "CrystalGrowth",
+    component: CrystalGrowth,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: CrystalGrowthPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      crystalDensity: 15,
+      growthSpeed: 0.5,
+      fractureIntensity: 0.6,
+      refractionIntensity: 0.8,
+      shineIntensity: 0.7,
+    },
+    category: "Abstract",
+    description: "Growing crystal formations with light refraction and energy bursts",
+  },
 ];
 
 export const RemotionRoot: React.FC = () => {
@@ -137,7 +253,7 @@ export const RemotionRoot: React.FC = () => {
           width={episode.width}
           height={episode.height}
           schema={episode.schema}
-          defaultProps={episode.defaultProps as any}
+          defaultProps={episode.defaultProps}
         />
       ))}
     </>
