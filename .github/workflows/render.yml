@@ -50,10 +50,10 @@ jobs:
             COMPOSITION=$(basename "$CHANGED_FILE" .tsx | sed 's/Root-//')
             echo "composition=$COMPOSITION" >> $GITHUB_OUTPUT
           else
-            echo "composition=${{ inputs.composition }}" >> $GITHUB_OUTPUT
+            echo "composition=CyberCityLoop-Professional-1" >> $GITHUB_OUTPUT
           fi
-          # Use default codec if not provided
-          echo "codec=${{ inputs.codec || 'h264' }}" >> $GITHUB_OUTPUT
+          # Use default codec
+          echo "codec=h264" >> $GITHUB_OUTPUT
 
       - name: Render ${{ steps.detect.outputs.composition }}
         run: |
