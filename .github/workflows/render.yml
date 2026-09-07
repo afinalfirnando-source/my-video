@@ -10,7 +10,7 @@ on:
     inputs:
       composition:
         description: "Composition ID"
-        required: true
+        required: false
         default: "CyberCityLoop-Professional-1"
       codec:
         description: "Video codec"
@@ -40,12 +40,26 @@ jobs:
       - name: Bundle
         run: npx remotion bundle
 
-      - name: Render ${{ inputs.composition }}
+      - name: Determine composition from push
+        id: detect
+        run: |
+          # Get the changed file from the push
+          CHANGED_FILE=$(git diff --name-only HEAD~1 HEAD | grep "src/Root" | head -1)
+          if [ -n "$CHANGED_FILE" ]; then
+            # Extract composition name from filename
+            COMPOSITION=$(basename "$CHANGED_FILE" .tsx | sed 's/Root-//')
+            echo "composition=$COMPOSITION" >> $GITHUB_OUTPUT
+          else
+            echo "composition=${{ inputs.composition }}" >> $GITHUB_OUTPUT
+          fi
+          echo "codec=${{ inputs.codec }}" >> $GITHUB_OUTPUT
+
+      - name: Render ${{ steps.detect.outputs.composition }}
         run: |
           npx remotion render \
-            "${{ inputs.composition }}" \
-            "out/${{ inputs.composition }}.mp4" \
-            --codec="${{ inputs.codec }}" \
+            "${{ steps.detect.outputs.composition }}" \
+            "out/${{ steps.detect.outputs.composition }}.mp4" \
+            --codec="${{ steps.detect.outputs.codec }}" \
             --crf=18 \
             --width=3840 \
             --height=2160 \
@@ -54,5 +68,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.composition }}-${{ inputs.codec }}
-          path: "out/${{ inputs.composition }}.mp4"
+          name: ${{ steps.detect.outputs.composition }}-${{ steps.detect.outputs.codec }}
+          path: "out/${{ steps.detect.outputs.composition }}.mp4"
