@@ -1,115 +1,143 @@
-// Original Root.tsx with 5 background seamless loops
+// Original Root.tsx with 5 new professional video concepts
 import { Composition } from "remotion";
-import { LuminescentCurrents } from "./templates/luminescent-currents/index.tsx";
-import { NeuralPulse } from "./templates/neural-pulse/index.tsx";
-import { MolecularCascade } from "./templates/molecular-cascade/index.tsx";
-import { SolarResonance } from "./templates/solar-resonance/index.tsx";
-import { UrbanFlow } from "./templates/urban-flow/index.tsx";
+import { CyberGrid } from "./templates/cyber-grid/index.tsx";
+import { DigitalAurora } from "./templates/digital-aurora/index.tsx";
+import { NebulaDrift } from "./templates/nebula-drift/index.tsx";
+import { OceanicDepths } from "./templates/oceanic-depths/index.tsx";
+import { SolarFlare } from "./templates/solar-flare/index.tsx";
 
-import { LuminescentCurrentsPropsSchema } from "./templates/luminescent-currents/types.ts";
-import { NeuralPulsePropsSchema } from "./templates/neural-pulse/types.ts";
-import { MolecularCascadePropsSchema } from "./templates/molecular-cascade/types.ts";
-import { SolarResonancePropsSchema } from "./templates/solar-resonance/types.ts";
-import { UrbanFlowPropsSchema } from "./templates/urban-flow/types.ts";
+import { CyberGridPropsSchema } from "./templates/cyber-grid/types.ts";
+import { DigitalAuroraPropsSchema } from "./templates/digital-aurora/types.ts";
+import { NebulaDriftPropsSchema } from "./templates/nebula-drift/types.ts";
+import { OceanicDepthsPropsSchema } from "./templates/oceanic-depths/types.ts";
+import { SolarFlarePropsSchema } from "./templates/solar-flare/types.ts";
 
-// Background seamless loop configurations
-const backgroundLoops = [
-  // 1. Luminescent Currents - Energy flow abstraction
+// Professional video series with diverse themes
+const videoSeries = [
+  // Episode 1: Cyberpunk City - Digital urban exploration
   {
-    id: "LuminescentCurrents-Professional-1",
-    component: LuminescentCurrents,
-    durationInFrames: 240,
-    fps: 60,
-    width: 3840,
-    height: 2160,
-    schema: LuminescentCurrentsPropsSchema,
-    defaultProps: {
-      flowSpeed: 0.8,
-      intensity: 0.9,
-      colorMode: "cyan" as const,
-    },
-    category: "Energy Flow",
-  },
-  // 2. Neural Pulse - Consciousness visualization
-  {
-    id: "NeuralPulse-Professional-1",
-    component: NeuralPulse,
-    durationInFrames: 180,
-    fps: 60,
-    width: 3840,
-    height: 2160,
-    schema: NeuralPulsePropsSchema,
-    defaultProps: {
-      pulseIntensity: 1.0,
-      nodeDensity: 1.2,
-      connectionStrength: 0.6,
-    },
-    category: "Neural",
-  },
-  // 3. Molecular Cascade - Particle physics
-  {
-    id: "MolecularCascade-Professional-1",
-    component: MolecularCascade,
+    id: "CyberCityLoop-Professional-1",
+    component: CyberGrid,
     durationInFrames: 300,
     fps: 60,
     width: 3840,
     height: 2160,
-    schema: MolecularCascadePropsSchema,
+    schema: CyberGridPropsSchema,
     defaultProps: {
-      moleculeSpeed: 1.2,
-      emissionRate: 0.8,
-      energyLevel: 1.0,
+      gridColor: "#00F0FF",
+      scanLineColor: "#FF00FF",
+      backgroundColor: "#0A001A",
+      gridSize: 25,
+      scanSpeed: 0.5,
+      glitchIntensity: 0.7,
+      dataStreamDensity: 100,
+      fps: 60,
     },
-    category: "Molecular",
+    category: "Cyberpunk",
+    description: "Digital urban pulse with neon glitch effects",
   },
-  // 4. Solar Resonance - Celestial harmonics
+  // Episode 2: Aurora Dreams - Nature meets technology
   {
-    id: "SolarResonance-Professional-1",
-    component: SolarResonance,
+    id: "AuroraDreams-Professional-1",
+    component: DigitalAurora,
     durationInFrames: 240,
     fps: 60,
     width: 3840,
     height: 2160,
-    schema: SolarResonancePropsSchema,
+    schema: DigitalAuroraPropsSchema,
     defaultProps: {
-      orbitSpeed: 1.0,
-      resonanceFrequency: 1.2,
-      lightIntensity: 0.9,
+      primaryColor: "#00FF00",
+      secondaryColor: "#00FFFF",
+      tertiaryColor: "#FF00FF",
+      auroraIntensity: 0.8,
+      curtainCount: 12,
+      interferenceIntensity: 0.6,
+      starDensity: 150,
+      waveSpeed: 0.4,
     },
-    category: "Celestial",
+    category: "Natural Tech",
+    description: "Organic-digital fusion with celestial energy",
   },
-  // 5. Urban Flow - Digital network
+  // Episode 3: Cosmic Journey - Space exploration narrative
   {
-    id: "UrbanFlow-Professional-1",
-    component: UrbanFlow,
-    durationInFrames: 216,
+    id: "CosmicVoyage-Professional-1",
+    component: NebulaDrift,
+    durationInFrames: 360,
     fps: 60,
     width: 3840,
     height: 2160,
-    schema: UrbanFlowPropsSchema,
+    schema: NebulaDriftPropsSchema,
     defaultProps: {
-      flowVelocity: 1.1,
-      gridDensity: 0.9,
-      neonIntensity: 1.0,
+      primaryColor: "#8A2BE2",
+      secondaryColor: "#00F0FF",
+      tertiaryColor: "#FF69B4",
+      swirlIntensity: 0.8,
+      particleDensity: 300,
+      glowIntensity: 0.7,
+      layerSpeed: 0.6,
     },
-    category: "Urban",
+    category: "Space Exploration",
+    description: "Deep space travel through swirling stellar formations",
+  },
+  // Episode 4: Oceanic Wonders - Underwater discovery
+  {
+    id: "OceanRealm-Professional-1",
+    component: OceanicDepths,
+    durationInFrames: 180,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: OceanicDepthsPropsSchema,
+    defaultProps: {
+      waterColor: "#1E3A8A",
+      lightColor: "#FFFFFF",
+      bioluminescentColor: "#00F0FF",
+      causticIntensity: 0.8,
+      bubbleCount: 200,
+      particleDensity: 200,
+      currentSpeed: 0.5,
+    },
+    category: "Marine Life",
+    description: "Underwater ecosystem with bioluminescent life",
+  },
+  // Episode 5: Solar Storm - Nature's power demonstration
+  {
+    id: "SolarTempest-Professional-1",
+    component: SolarFlare,
+    durationInFrames: 200,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: SolarFlarePropsSchema,
+    defaultProps: {
+      solarColor: "#FFA500",
+      flareColor: "#FF4500",
+      plasmaColor: "#FFD700",
+      surfaceIntensity: 0.8,
+      flareCount: 10,
+      magneticLineCount: 20,
+      plasmaStreamDensity: 100,
+      rotationSpeed: 0.3,
+    },
+    category: "Natural Phenomena",
+    description: "Solar storm with explosive plasma and magnetic interactions",
   },
 ];
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      {backgroundLoops.map((loop) => (
+      {videoSeries.map((episode) => (
         <Composition
-          key={loop.id}
-          id={loop.id}
-          component={loop.component}
-          durationInFrames={loop.durationInFrames}
-          fps={loop.fps}
-          width={loop.width}
-          height={loop.height}
-          schema={loop.schema}
-          defaultProps={loop.defaultProps as any}
+          key={episode.id}
+          id={episode.id}
+          component={episode.component}
+          durationInFrames={episode.durationInFrames}
+          fps={episode.fps}
+          width={episode.width}
+          height={episode.height}
+          schema={episode.schema}
+          defaultProps={episode.defaultProps as any}
         />
       ))}
     </>
