@@ -6,7 +6,7 @@ import {
 import React, { useMemo, useRef, useEffect } from "react";
 import type { QuantumParticlesProps } from "./types";
 
-const TOTAL_FRAMES = 300;
+const TOTAL_FRAMES = 900;
 
 type Particle = {
   x: number;

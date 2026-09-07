@@ -103,7 +103,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="VortexWeb"
         component={VortexWeb}
-        durationInFrames={720}
+        durationInFrames={900}
         fps={60}
         width={3840}
         height={2160}
@@ -114,7 +114,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="QuantumParticles"
         component={QuantumParticles}
-        durationInFrames={300}
+        durationInFrames={900}
         fps={60}
         width={3840}
         height={2160}
@@ -125,7 +125,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="GeometricGrid"
         component={GeometricGrid}
-        durationInFrames={300}
+        durationInFrames={900}
         fps={60}
         width={3840}
         height={2160}
@@ -136,7 +136,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="FluidChromatic"
         component={FluidChromatic}
-        durationInFrames={360}
+        durationInFrames={900}
         fps={60}
         width={3840}
         height={2160}
@@ -147,7 +147,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="BinaryMatrix"
         component={BinaryMatrix}
-        durationInFrames={300}
+        durationInFrames={900}
         fps={60}
         width={3840}
         height={2160}
@@ -158,7 +158,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="FractalZoom"
         component={FractalZoom}
-        durationInFrames={360}
+        durationInFrames={900}
         fps={60}
         width={3840}
         height={2160}

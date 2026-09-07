@@ -6,7 +6,7 @@ import {
 import React, { useRef, useEffect } from "react";
 import type { BinaryMatrixProps } from "./types";
 
-const TOTAL_FRAMES = 300;
+const TOTAL_FRAMES = 900;
 const CHARACTERS = "01アカサタナハマヤラワガザダバパ";
 
 export const BinaryMatrix: React.FC<BinaryMatrixProps> = ({

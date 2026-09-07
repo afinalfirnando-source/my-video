@@ -6,7 +6,7 @@ import {
 import React, { useRef, useEffect } from "react";
 import type { FluidChromaticProps } from "./types";
 
-const TOTAL_FRAMES = 360;
+const TOTAL_FRAMES = 900;
 
 export const FluidChromatic: React.FC<FluidChromaticProps> = ({
   primaryColor = "#00F0FF",
@@ -30,7 +30,7 @@ export const FluidChromatic: React.FC<FluidChromaticProps> = ({
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, width, height);
 
-    const time = frame / TOTAL_FRAMES;
+    const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
 
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     const hue1 = (time * 360 * flowSpeed) % 360;

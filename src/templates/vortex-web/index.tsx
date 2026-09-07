@@ -7,7 +7,7 @@ import {
 import React, { useMemo, useRef } from "react";
 import type { VortexWebProps } from "./types";
 
-const TOTAL_FRAMES = 720;
+const TOTAL_FRAMES = 900;
 const VERTICES = 16;
 const FOV = 800;
 

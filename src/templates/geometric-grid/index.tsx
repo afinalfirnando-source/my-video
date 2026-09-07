@@ -6,7 +6,7 @@ import {
 import React, { useRef, useEffect } from "react";
 import type { GeometricGridProps } from "./types";
 
-const TOTAL_FRAMES = 300;
+const TOTAL_FRAMES = 900;
 
 export const GeometricGrid: React.FC<GeometricGridProps> = ({
   gridColor = "#00F0FF",
@@ -32,7 +32,7 @@ export const GeometricGrid: React.FC<GeometricGridProps> = ({
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
 
-    const time = frame / TOTAL_FRAMES;
+    const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
     const rotation = time * Math.PI * 2 * rotationSpeed;
     const morphProgress = Math.sin(time * Math.PI * 2 * morphSpeed);
 

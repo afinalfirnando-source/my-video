@@ -6,7 +6,7 @@ import {
 import React, { useRef, useEffect } from "react";
 import type { FractalZoomProps } from "./types";
 
-const TOTAL_FRAMES = 360;
+const TOTAL_FRAMES = 900;
 
 const colorSchemes: Record<string, (t: number) => [number, number, number]> = {
   fire: (t: number) => {
