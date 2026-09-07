@@ -3,7 +3,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import type { GeometricGridProps } from "./types";
 
 const TOTAL_FRAMES = 900;
@@ -12,8 +12,8 @@ export const GeometricGrid: React.FC<GeometricGridProps> = ({
   gridColor = "#00F0FF",
   backgroundColor = "#000000",
   gridSize = 12,
-  rotationSpeed = 0.1,
-  morphSpeed = 0.3,
+  rotationSpeed = 1,
+  morphSpeed = 1,
   depth = 20,
   lineWidth = 2,
 }) => {
@@ -21,20 +21,17 @@ export const GeometricGrid: React.FC<GeometricGridProps> = ({
   const { width, height } = useVideoConfig();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
+  const rotation = time * Math.PI * 2 * rotationSpeed;
+  const morphProgress = Math.sin(time * Math.PI * 2 * morphSpeed);
 
+  const ctx = canvasRef.current?.getContext("2d");
+
+  if (ctx) {
     ctx.clearRect(0, 0, width, height);
 
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
-
-    const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
-    const rotation = time * Math.PI * 2 * rotationSpeed;
-    const morphProgress = Math.sin(time * Math.PI * 2 * morphSpeed);
 
     const cx = width / 2;
     const cy = height / 2;
@@ -70,6 +67,7 @@ export const GeometricGrid: React.FC<GeometricGridProps> = ({
     ctx.globalAlpha = 1;
     ctx.strokeStyle = gridColor;
     ctx.lineWidth = 1;
+    ctx.shadowBlur = 0;
 
     for (let i = 0; i <= gridSize; i++) {
       const x = (width / gridSize) * i;
@@ -86,7 +84,7 @@ export const GeometricGrid: React.FC<GeometricGridProps> = ({
     }
 
     ctx.restore();
-  });
+  }
 
   return (
     <AbsoluteFill style={{ backgroundColor: backgroundColor }}>

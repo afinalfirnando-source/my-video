@@ -3,7 +3,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import type { FractalZoomProps } from "./types";
 
 const TOTAL_FRAMES = 900;
@@ -44,7 +44,7 @@ const colorSchemes: Record<string, (t: number) => [number, number, number]> = {
 export const FractalZoom: React.FC<FractalZoomProps> = ({
   colorScheme = "fire",
   zoomSpeed = 1.0,
-  maxIterations = 80,
+  maxIterations = 60,
   intensity = 0.8,
   fractalType = "mandelbrot",
   backgroundColor = "#000000",
@@ -56,41 +56,44 @@ export const FractalZoom: React.FC<FractalZoomProps> = ({
   const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
   const getColor = colorSchemes[colorScheme] || colorSchemes.fire;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const ctx = canvasRef.current?.getContext("2d");
 
+  if (ctx) {
     const imageData = ctx.createImageData(width, height);
     const data = imageData.data;
 
-    const zoom = Math.exp(time * 4 * zoomSpeed) * 0.5;
-    const offsetX = Math.sin(time * 0.5) * 0.5;
-    const offsetY = Math.cos(time * 0.3) * 0.5;
+    const zoom = Math.exp(time * 3 * zoomSpeed) * 0.8;
+    const offsetX = Math.sin(time * 0.5) * 0.3;
+    const offsetY = Math.cos(time * 0.3) * 0.3;
 
     const centerX = -0.745428 + offsetX;
     const centerY = 0.113009 + offsetY;
 
     const maxDist = Math.max(width, height);
+    const step = 2;
 
-    for (let y = 0; y < height; y += 2) {
-      for (let x = 0; x < width; x += 2) {
-        const px = (x / zoom) / maxDist - 0.5 + offsetX;
-        const py = (y / zoom) / maxDist - 0.5 + offsetY;
-
-        const zx = fractalType === "julia" ? px : 0;
-        const zy = fractalType === "julia" ? py : 0;
-
-        let cx: number;
-        let cy: number;
+    for (let y = 0; y < height; y += step) {
+      for (let x = 0; x < width; x += step) {
+        let px: number;
+        let py: number;
 
         if (fractalType === "julia") {
-          cx = -0.7 + Math.sin(time * 0.1) * 0.1;
-          cy = 0.27015 + Math.cos(time * 0.15) * 0.1;
+          px = (x / zoom) / maxDist - 0.5;
+          py = (y / zoom) / maxDist - 0.5;
         } else {
-          cx = px + centerX;
-          cy = py + centerY;
+          px = (x / maxDist - 0.5) / zoom;
+          py = (y / maxDist - 0.5) / zoom;
+        }
+
+        let zx: number;
+        let zy: number;
+
+        if (fractalType === "julia") {
+          zx = px;
+          zy = py;
+        } else {
+          zx = 0;
+          zy = 0;
         }
 
         let iteration = 0;
@@ -98,47 +101,62 @@ export const FractalZoom: React.FC<FractalZoomProps> = ({
         let yTemp = zy;
 
         while (xTemp * xTemp + yTemp * yTemp <= 4 && iteration < maxIterations) {
-          const xNew = xTemp * xTemp - yTemp * yTemp + cx;
-          yTemp = 2 * xTemp * yTemp + cy;
-          xTemp = xNew;
+          const xNew = xTemp * xTemp - yTemp * yTemp;
+          if (fractalType === "julia") {
+            yTemp = 2 * xTemp * yTemp + (0.27015 + Math.cos(time * 0.15) * 0.1);
+            xTemp = xNew + (-0.7 + Math.sin(time * 0.1) * 0.1);
+          } else {
+            yTemp = 2 * xTemp * yTemp + (py + centerY);
+            xTemp = xNew + (px + centerX);
+          }
           iteration++;
         }
 
         const t = iteration / maxIterations;
         const [r, g, b] = getColor(t * intensity);
         const idx = (y * width + x) * 4;
-        data[idx] = r;
-        data[idx + 1] = g;
-        data[idx + 2] = b;
-        data[idx + 3] = 255;
 
-        if (x + 1 < width) {
-          const idx2 = (y * width + x + 1) * 4;
-          data[idx2] = r;
-          data[idx2 + 1] = g;
-          data[idx2 + 2] = b;
-          data[idx2 + 3] = 255;
+        if (idx < data.length - 3) {
+          data[idx] = r;
+          data[idx + 1] = g;
+          data[idx + 2] = b;
+          data[idx + 3] = 255;
         }
-        if (y + 1 < height) {
-          const idx3 = ((y + 1) * width + x) * 4;
-          data[idx3] = r;
-          data[idx3 + 1] = g;
-          data[idx3 + 2] = b;
-          data[idx3 + 3] = 255;
 
-          if (x + 1 < width) {
-            const idx4 = ((y + 1) * width + x + 1) * 4;
-            data[idx4] = r;
-            data[idx4 + 1] = g;
-            data[idx4 + 2] = b;
-            data[idx4 + 3] = 255;
+        if (x + step < width) {
+          const idx2 = (y * width + x + step) * 4;
+          if (idx2 < data.length - 3) {
+            data[idx2] = r;
+            data[idx2 + 1] = g;
+            data[idx2 + 2] = b;
+            data[idx2 + 3] = 255;
+          }
+        }
+
+        if (y + step < height) {
+          const idx3 = ((y + step) * width + x) * 4;
+          if (idx3 < data.length - 3) {
+            data[idx3] = r;
+            data[idx3 + 1] = g;
+            data[idx3 + 2] = b;
+            data[idx3 + 3] = 255;
+          }
+
+          if (x + step < width) {
+            const idx4 = ((y + step) * width + x + step) * 4;
+            if (idx4 < data.length - 3) {
+              data[idx4] = r;
+              data[idx4 + 1] = g;
+              data[idx4 + 2] = b;
+              data[idx4 + 3] = 255;
+            }
           }
         }
       }
     }
 
     ctx.putImageData(imageData, 0, 0);
-  });
+  }
 
   return (
     <AbsoluteFill style={{ backgroundColor: backgroundColor }}>

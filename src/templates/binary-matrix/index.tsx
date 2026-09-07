@@ -3,11 +3,11 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import type { BinaryMatrixProps } from "./types";
 
 const TOTAL_FRAMES = 900;
-const CHARACTERS = "01アカサタナハマヤラワガザダバパ";
+const CHARACTERS = "01";
 
 export const BinaryMatrix: React.FC<BinaryMatrixProps> = ({
   textColor = "#00FF88",
@@ -22,14 +22,12 @@ export const BinaryMatrix: React.FC<BinaryMatrixProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
-
   const columns = Math.floor((width / fontSize) * rainDensity);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const ctx = canvasRef.current?.getContext("2d");
+
+  if (ctx) {
+    ctx.clearRect(0, 0, width, height);
 
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
@@ -39,37 +37,36 @@ export const BinaryMatrix: React.FC<BinaryMatrixProps> = ({
     ctx.font = `${fontSize}px monospace`;
     ctx.textBaseline = "top";
 
-    const columnHeight = height / fontSize;
+    const columnHeight = Math.floor(height / fontSize) + 2;
 
     for (let i = 0; i < columns; i++) {
-      const colTime = time * speed * 2 + i * 0.3;
+      const colTime = (time * speed + i * 0.1) % 1;
 
-      for (let j = 0; j < columnHeight + 2; j++) {
-        const charIndex = Math.floor(Math.sin(j + colTime * 0.3) * CHARACTERS.length + colTime) % CHARACTERS.length;
+      for (let j = 0; j < columnHeight; j++) {
+        const charIndex = (i * 7 + j * 3 + Math.floor(colTime * columnHeight)) % CHARACTERS.length;
         const char = CHARACTERS[Math.abs(charIndex)];
         const x = i * fontSize;
-        const y = ((j - colTime) * fontSize) % (height + fontSize);
+        const y = (((j - colTime) * 1) % (columnHeight + 1)) * fontSize;
 
-        if (y >= 0 && y < height) {
-          const distanceFromCenter = Math.abs(j - (columnHeight / 2));
-          const alpha = 1 - (distanceFromCenter / (columnHeight / 2));
-          const brightness = 0.5 + Math.sin(colTime + j * 0.1) * 0.5;
+        if (y >= -fontSize && y < height + fontSize) {
+          const distanceFromCenter = Math.abs(j - columnHeight / 2) / (columnHeight / 2);
+          const alpha = Math.max(0.1, 1 - distanceFromCenter) * (0.5 + colTime * 0.5);
 
           ctx.fillStyle = textColor;
-          ctx.globalAlpha = Math.max(0.1, alpha * brightness);
+          ctx.globalAlpha = alpha;
           ctx.fillText(char, x, y);
         }
       }
     }
 
-    ctx.globalAlpha = 0.1;
+    ctx.globalAlpha = 0.05;
     ctx.fillStyle = textColor;
     const noiseY = (time * speed * height) % height;
     ctx.fillRect(0, noiseY, width, fontSize);
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;
-  });
+  }
 
   return (
     <AbsoluteFill style={{ backgroundColor: backgroundColor }}>

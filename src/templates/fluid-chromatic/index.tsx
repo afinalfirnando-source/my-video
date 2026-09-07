@@ -3,7 +3,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import type { FluidChromaticProps } from "./types";
 
 const TOTAL_FRAMES = 900;
@@ -11,7 +11,7 @@ const TOTAL_FRAMES = 900;
 export const FluidChromatic: React.FC<FluidChromaticProps> = ({
   primaryColor = "#00F0FF",
   secondaryColor = "#FF00FF",
-  flowSpeed = 0.5,
+  flowSpeed = 1,
   turbulence = 0.8,
   opacity = 0.4,
 }) => {
@@ -19,25 +19,21 @@ export const FluidChromatic: React.FC<FluidChromaticProps> = ({
   const { width, height } = useVideoConfig();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
 
+  const ctx = canvasRef.current?.getContext("2d");
+
+  if (ctx) {
     ctx.clearRect(0, 0, width, height);
 
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, width, height);
 
-    const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
+    const hue1 = (time * 360 * flowSpeed) % 360;
 
     const gradient = ctx.createLinearGradient(0, 0, width, height);
-    const hue1 = (time * 360 * flowSpeed) % 360;
-    const hue2 = ((time * 360 * flowSpeed + 180) % 360);
-
     gradient.addColorStop(0, `hsl(${hue1}, 90%, 50%)`);
-    gradient.addColorStop(0.5, `hsl(${(hue2 + 60) % 360}, 90%, 50%)`);
+    gradient.addColorStop(0.5, `hsl(${(hue1 + 180) % 360}, 90%, 50%)`);
     gradient.addColorStop(1, `hsl(${(hue1 + 120) % 360}, 90%, 50%)`);
 
     ctx.globalAlpha = opacity;
@@ -54,7 +50,7 @@ export const FluidChromatic: React.FC<FluidChromaticProps> = ({
       const amplitude = height * 0.15 * turbulence;
       const frequency = 0.003 + i * 0.002;
 
-      ctx.strokeStyle = `hsl(${hue1 + i * 40}, 90%, 50%)`;
+      ctx.strokeStyle = `hsl(${(hue1 + i * 40) % 360}, 90%, 50%)`;
       ctx.lineWidth = 80 + i * 40;
       ctx.beginPath();
 
@@ -90,7 +86,7 @@ export const FluidChromatic: React.FC<FluidChromaticProps> = ({
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;
-  });
+  }
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000000" }}>

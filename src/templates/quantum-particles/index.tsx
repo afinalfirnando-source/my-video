@@ -3,7 +3,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import React, { useMemo, useRef, useEffect } from "react";
+import React, { useMemo, useRef } from "react";
 import type { QuantumParticlesProps } from "./types";
 
 const TOTAL_FRAMES = 900;
@@ -50,19 +50,16 @@ export const QuantumParticles: React.FC<QuantumParticlesProps> = ({
     [width, height, particleCount, particleSize]
   );
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const driftX = Math.sin(time * Math.PI * 2 + 0.3) * 30 * driftSpeed;
+  const driftY = Math.cos(time * Math.PI * 2 + 0.7) * 20 * driftSpeed;
 
+  const ctx = canvasRef.current?.getContext("2d");
+
+  if (ctx) {
     ctx.clearRect(0, 0, width, height);
 
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, width, height);
-
-    const driftX = Math.sin(time * Math.PI * 2 + 0.3) * 30 * driftSpeed;
-    const driftY = Math.cos(time * Math.PI * 2 + 0.7) * 20 * driftSpeed;
 
     ctx.save();
     ctx.shadowBlur = 20 * glowIntensity;
@@ -117,7 +114,7 @@ export const QuantumParticles: React.FC<QuantumParticlesProps> = ({
     }
 
     ctx.restore();
-  });
+  }
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#000000" }}>

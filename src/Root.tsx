@@ -54,8 +54,8 @@ const geometricDefault: GeometricGridProps = {
   gridColor: "#00F0FF",
   backgroundColor: "#000000",
   gridSize: 12,
-  rotationSpeed: 0.1,
-  morphSpeed: 0.3,
+  rotationSpeed: 1,
+  morphSpeed: 1,
   depth: 20,
   lineWidth: 2,
 };
