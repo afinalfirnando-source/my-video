@@ -52,7 +52,8 @@ jobs:
           else
             echo "composition=${{ inputs.composition }}" >> $GITHUB_OUTPUT
           fi
-          echo "codec=${{ inputs.codec }}" >> $GITHUB_OUTPUT
+          # Use default codec if not provided
+          echo "codec=${{ inputs.codec || 'h264' }}" >> $GITHUB_OUTPUT
 
       - name: Render ${{ steps.detect.outputs.composition }}
         run: |
