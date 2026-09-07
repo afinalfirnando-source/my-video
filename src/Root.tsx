@@ -21,6 +21,21 @@ import type { BinaryMatrixProps } from "./templates/binary-matrix/types";
 import { FractalZoom } from "./templates/fractal-zoom";
 import { FractalZoomPropsSchema } from "./templates/fractal-zoom/types";
 import type { FractalZoomProps } from "./templates/fractal-zoom/types";
+import { NebulaDrift } from "./templates/nebula-drift";
+import { NebulaDriftPropsSchema } from "./templates/nebula-drift/types";
+import type { NebulaDriftProps } from "./templates/nebula-drift/types";
+import { CyberGrid } from "./templates/cyber-grid";
+import { CyberGridPropsSchema } from "./templates/cyber-grid/types";
+import type { CyberGridProps } from "./templates/cyber-grid/types";
+import { OceanicDepths } from "./templates/oceanic-depths";
+import { OceanicDepthsPropsSchema } from "./templates/oceanic-depths/types";
+import type { OceanicDepthsProps } from "./templates/oceanic-depths/types";
+import { SolarFlare } from "./templates/solar-flare";
+import { SolarFlarePropsSchema } from "./templates/solar-flare/types";
+import type { SolarFlareProps } from "./templates/solar-flare/types";
+import { DigitalAurora } from "./templates/digital-aurora";
+import { DigitalAuroraPropsSchema } from "./templates/digital-aurora/types";
+import type { DigitalAuroraProps } from "./templates/digital-aurora/types";
 
 const lowerThirdDefault: LowerThirdProps = {
   title: "BREAKING NEWS",
@@ -94,6 +109,59 @@ const fractalDefault: FractalZoomProps = {
   backgroundColor: "#000000",
   glowIntensity: 0.3,
   orbitTrap: true,
+};
+
+const nebulaDefault: NebulaDriftProps = {
+  primaryColor: "#8A2BE2",
+  secondaryColor: "#00F0FF",
+  tertiaryColor: "#FF69B4",
+  swirlIntensity: 0.8,
+  particleDensity: 300,
+  glowIntensity: 0.7,
+  layerSpeed: 0.6,
+};
+
+const cyberDefault: CyberGridProps = {
+  gridColor: "#00F0FF",
+  scanLineColor: "#FF00FF",
+  backgroundColor: "#000000",
+  gridSize: 25,
+  scanSpeed: 0.5,
+  glitchIntensity: 0.7,
+  dataStreamDensity: 100,
+  fps: 60,
+};
+
+const oceanDefault: OceanicDepthsProps = {
+  waterColor: "#1E3A8A",
+  lightColor: "#FFFFFF",
+  bioluminescentColor: "#00F0FF",
+  causticIntensity: 0.8,
+  bubbleCount: 200,
+  particleDensity: 200,
+  currentSpeed: 0.5,
+};
+
+const solarDefault: SolarFlareProps = {
+  solarColor: "#FFA500",
+  flareColor: "#FF4500",
+  plasmaColor: "#FFD700",
+  surfaceIntensity: 0.8,
+  flareCount: 10,
+  magneticLineCount: 20,
+  plasmaStreamDensity: 100,
+  rotationSpeed: 0.3,
+};
+
+const auroraDefault: DigitalAuroraProps = {
+  primaryColor: "#00FF00",
+  secondaryColor: "#00FFFF",
+  tertiaryColor: "#FF00FF",
+  auroraIntensity: 0.8,
+  curtainCount: 15,
+  interferenceIntensity: 0.6,
+  starDensity: 200,
+  waveSpeed: 0.5,
 };
 
 export const RemotionRoot: React.FC = () => {
@@ -174,6 +242,61 @@ export const RemotionRoot: React.FC = () => {
         height={2160}
         schema={FractalZoomPropsSchema}
         defaultProps={fractalDefault}
+      />
+
+      <Composition
+        id="NebulaDrift"
+        component={NebulaDrift}
+        durationInFrames={900}
+        fps={60}
+        width={3840}
+        height={2160}
+        schema={NebulaDriftPropsSchema}
+        defaultProps={nebulaDefault}
+      />
+
+      <Composition
+        id="CyberGrid"
+        component={CyberGrid}
+        durationInFrames={900}
+        fps={60}
+        width={3840}
+        height={2160}
+        schema={CyberGridPropsSchema}
+        defaultProps={cyberDefault}
+      />
+
+      <Composition
+        id="OceanicDepths"
+        component={OceanicDepths}
+        durationInFrames={900}
+        fps={60}
+        width={3840}
+        height={2160}
+        schema={OceanicDepthsPropsSchema}
+        defaultProps={oceanDefault}
+      />
+
+      <Composition
+        id="SolarFlare"
+        component={SolarFlare}
+        durationInFrames={900}
+        fps={60}
+        width={3840}
+        height={2160}
+        schema={SolarFlarePropsSchema}
+        defaultProps={solarDefault}
+      />
+
+      <Composition
+        id="DigitalAurora"
+        component={DigitalAurora}
+        durationInFrames={900}
+        fps={60}
+        width={3840}
+        height={2160}
+        schema={DigitalAuroraPropsSchema}
+        defaultProps={auroraDefault}
       />
     </>
   );
