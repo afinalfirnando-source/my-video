@@ -23,6 +23,7 @@ import { CrystalGrowth } from "./templates/crystal-growth";
 import { CrystalGrowthPropsSchema } from "./templates/crystal-growth/types";
 
 // Professional video series with diverse themes
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const videoSeries: any[] = [
   // Episode 1: Cyberpunk City - Digital urban exploration
   {

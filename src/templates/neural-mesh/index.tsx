@@ -174,12 +174,12 @@ export const NeuralMesh: React.FC<NeuralMeshProps> = ({
     }
 
     ctx.globalAlpha = 0.9;
-    ctx.shadowBlur = 30;
+    ctx.shadowBlur = 30 * glowIntensity;
     ctx.shadowColor = nodeColor;
 
     for (let i = 0; i < nodes.length; i++) {
       const n = nodes[i];
-      const nodePulse = 0.7 + Math.sin(t * n.pulseSpeed + n.pulsePhase) * 0.3;
+      const nodePulse = 0.7 + Math.sin(t * n.pulseSpeed * pulseSpeed + n.pulsePhase) * 0.3;
 
       ctx.globalAlpha = nodePulse * 0.9;
       ctx.fillStyle = hsl(200 + n.layer * 20, 90, 60);

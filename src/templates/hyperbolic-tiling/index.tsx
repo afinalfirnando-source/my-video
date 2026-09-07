@@ -60,7 +60,7 @@ export const HyperbolicTiling: React.FC<HyperbolicTilingProps> = ({
       }
     }
     return tileList;
-  }, [tileDensity, t, rotationSpeed]);
+  }, [tileDensity]);
 
   const ctx = canvasRef.current?.getContext("2d");
 
@@ -70,14 +70,14 @@ export const HyperbolicTiling: React.FC<HyperbolicTilingProps> = ({
 
     const cx = width / 2;
     const cy = height / 2;
-    const scale = Math.min(width, height) * 0.4;
+    const scale = Math.min(width, height) * (0.4 + zoomSpeed * 0.2);
 
     ctx.save();
     ctx.translate(cx, cy);
     ctx.scale(1, 1);
 
     ctx.globalAlpha = 0.6;
-    ctx.shadowBlur = 40;
+    ctx.shadowBlur = 40 * glowIntensity;
     ctx.shadowColor = primaryColor;
 
     const cosT = Math.cos(t * rotationSpeed);
