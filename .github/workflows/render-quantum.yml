@@ -39,7 +39,7 @@ jobs:
             "QuantumFoam" \
             "out/quantum-foam.mp4" \
             --codec=h264 \
-            --crf=17 \
+            --crf=18 \
             --preset=fast \
             --width=3840 \
             --height=2160 \
