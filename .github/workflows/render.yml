@@ -42,10 +42,12 @@ jobs:
 
       - name: Render Composition
         run: |
+          COMPOSITION="${{ inputs.composition || 'VortexWeb' }}"
+          CODEC="${{ inputs.codec || 'h264' }}"
           npx remotion render \
-            ${{ inputs.composition }} \
-            out/${{ inputs.composition }}.mp4 \
-            --codec=${{ inputs.codec }} \
+            "$COMPOSITION" \
+            "out/$COMPOSITION.mp4" \
+            --codec="$CODEC" \
             --crf=18 \
             --width=3840 \
             --height=2160 \
