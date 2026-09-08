@@ -39,7 +39,7 @@ jobs:
             "ParticleVortex" \
             "out/particle-vortex.mp4" \
             --codec=h264 \
-            --crf=3 \
+            --crf=0 \
             --preset=fast \
             --width=3840 \
             --height=2160 \
