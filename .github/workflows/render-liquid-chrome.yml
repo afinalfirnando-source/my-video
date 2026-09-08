@@ -39,7 +39,7 @@ jobs:
             "LiquidChrome" \
             "out/liquid-chrome.mp4" \
             --codec=h264 \
-            --crf=14 \
+            --bitrate=80M \
             --preset=fast \
             --width=3840 \
             --height=2160 \
