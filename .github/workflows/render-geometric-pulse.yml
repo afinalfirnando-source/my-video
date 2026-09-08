@@ -39,7 +39,7 @@ jobs:
             "GeometricPulse" \
             "out/geometric-pulse.mp4" \
             --codec=h264 \
-            --crf=5 \
+            --crf=3 \
             --preset=fast \
             --width=3840 \
             --height=2160 \
