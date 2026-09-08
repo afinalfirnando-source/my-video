@@ -21,6 +21,16 @@ import { VolumetricCloudscape } from "./templates/volumetric-cloudscape";
 import { VolumetricCloudscapePropsSchema } from "./templates/volumetric-cloudscape/types";
 import { CrystalGrowth } from "./templates/crystal-growth";
 import { CrystalGrowthPropsSchema } from "./templates/crystal-growth/types";
+import { LiquidChrome } from "./templates/liquid-chrome";
+import { LiquidChromePropsSchema } from "./templates/liquid-chrome/types";
+import { NeonWaveRider } from "./templates/neon-wave-rider";
+import { NeonWaveRiderPropsSchema } from "./templates/neon-wave-rider/types";
+import { ParticleVortex } from "./templates/particle-vortex";
+import { ParticleVortexPropsSchema } from "./templates/particle-vortex/types";
+import { GradientAurora } from "./templates/gradient-aurora";
+import { GradientAuroraPropsSchema } from "./templates/gradient-aurora/types";
+import { GeometricPulse } from "./templates/geometric-pulse";
+import { GeometricPulsePropsSchema } from "./templates/geometric-pulse/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -238,6 +248,102 @@ const videoSeries: any[] = [
     },
     category: "Abstract",
     description: "Growing crystal formations with light refraction and energy bursts",
+  },
+  {
+    id: "LiquidChrome",
+    component: LiquidChrome,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: LiquidChromePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      rippleCount: 24,
+      flowSpeed: 0.4,
+      waveAmplitude: 0.6,
+      metallicShine: 0.8,
+    },
+    category: "Abstract",
+    description: "Flowing liquid chrome ripples with metallic reflections and soft neon light",
+  },
+  {
+    id: "NeonWaveRider",
+    component: NeonWaveRider,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: NeonWaveRiderPropsSchema,
+    defaultProps: {
+      primaryColor: "#FF2A6D",
+      secondaryColor: "#05FFA1",
+      waveCount: 10,
+      waveSpeed: 0.5,
+      waveAmplitude: 0.7,
+      glowIntensity: 0.8,
+      trailLength: 0.6,
+    },
+    category: "Motion",
+    description: "Stacked neon sine-wave ribbons with glowing trails and energy pulses",
+  },
+  {
+    id: "ParticleVortex",
+    component: ParticleVortex,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: ParticleVortexPropsSchema,
+    defaultProps: {
+      primaryColor: "#FF8C00",
+      secondaryColor: "#FF0080",
+      particleCount: 420,
+      vortexSpeed: 0.6,
+      spiralStrength: 0.8,
+      coreGlow: 0.9,
+    },
+    category: "Energy",
+    description: "Swirling particle vortex with bright core glow and orbiting energy trails",
+  },
+  {
+    id: "GradientAurora",
+    component: GradientAurora,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: GradientAuroraPropsSchema,
+    defaultProps: {
+      primaryColor: "#00FF87",
+      secondaryColor: "#60A5FA",
+      bandCount: 9,
+      flowSpeed: 0.35,
+      waveAmplitude: 0.7,
+      glowIntensity: 0.75,
+    },
+    category: "Nature",
+    description: "Soft flowing aurora bands with gentle gradients and atmospheric depth",
+  },
+  {
+    id: "GeometricPulse",
+    component: GeometricPulse,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: GeometricPulsePropsSchema,
+    defaultProps: {
+      primaryColor: "#FF4D8D",
+      secondaryColor: "#FFD166",
+      shapeCount: 28,
+      pulseSpeed: 0.5,
+      rotationSpeed: 0.4,
+      glowIntensity: 0.75,
+    },
+    category: "Abstract",
+    description: "Pulsing geometric shapes with rotation, glow halos, and star particles",
   },
 ];
 
