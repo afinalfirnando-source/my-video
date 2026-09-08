@@ -299,7 +299,7 @@ const videoSeries: any[] = [
     defaultProps: {
       primaryColor: "#FF8C00",
       secondaryColor: "#FF0080",
-      particleCount: 900,
+      particleCount: 1500,
       vortexSpeed: 0.6,
       spiralStrength: 0.8,
       coreGlow: 0.9,
@@ -337,7 +337,7 @@ const videoSeries: any[] = [
     defaultProps: {
       primaryColor: "#FF4D8D",
       secondaryColor: "#FFD166",
-      shapeCount: 60,
+      shapeCount: 120,
       pulseSpeed: 0.5,
       rotationSpeed: 0.4,
       glowIntensity: 0.75,

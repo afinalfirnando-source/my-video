@@ -30,7 +30,7 @@ const hsl = (h: number, s: number, l: number): string => {
 export const ParticleVortex: React.FC<ParticleVortexProps> = ({
   primaryColor = "#FF8C00",
   secondaryColor = "#FF0080",
-  particleCount = 420,
+  particleCount = 1500,
   vortexSpeed = 0.6,
   spiralStrength = 0.8,
   coreGlow = 0.9,
