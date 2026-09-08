@@ -24,7 +24,7 @@ jobs:
     if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.composition == '') }}
     strategy:
         matrix:
-          composition: ["NeuralMesh", "QuantumFoam", "HyperbolicTiling", "VolumetricCloudscape", "CrystalGrowth"]
+          composition: ["NeuralMesh", "QuantumFoam", "HyperbolicTiling", "VolumetricCloudscape", "CrystalGrowth", "LiquidChrome", "NeonWaveRider", "ParticleVortex", "GradientAurora", "GeometricPulse"]
 
     steps:
       - uses: actions/checkout@v4
