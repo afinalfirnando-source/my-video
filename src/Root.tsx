@@ -337,7 +337,7 @@ const videoSeries: any[] = [
     defaultProps: {
       primaryColor: "#FF4D8D",
       secondaryColor: "#FFD166",
-      shapeCount: 120,
+      shapeCount: 200,
       pulseSpeed: 0.5,
       rotationSpeed: 0.4,
       glowIntensity: 0.75,

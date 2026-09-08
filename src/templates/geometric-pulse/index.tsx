@@ -30,7 +30,7 @@ const hsl = (h: number, s: number, l: number): string => {
 export const GeometricPulse: React.FC<GeometricPulseProps> = ({
   primaryColor = "#FF4D8D",
   secondaryColor = "#FFD166",
-  shapeCount = 120,
+  shapeCount = 200,
   pulseSpeed = 0.5,
   rotationSpeed = 0.4,
   glowIntensity = 0.75,
@@ -96,7 +96,7 @@ export const GeometricPulse: React.FC<GeometricPulseProps> = ({
     ctx.globalAlpha = 0.5;
     ctx.shadowBlur = 25;
     ctx.shadowColor = secondaryColor;
-    for (let i = 0; i < 160; i++) {
+    for (let i = 0; i < 400; i++) {
       const sx = seeded(i * 41 + time * 35) * width;
       const sy = seeded(i * 43 + time * 25) * height;
       const ss = seeded(i * 47) * 2 + 0.5;

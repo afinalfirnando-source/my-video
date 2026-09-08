@@ -3,7 +3,7 @@ import { z } from "zod";
 export const GeometricPulsePropsSchema = z.object({
   primaryColor: z.string().default("#FF4D8D"),
   secondaryColor: z.string().default("#FFD166"),
-  shapeCount: z.number().default(60),
+  shapeCount: z.number().default(200),
   pulseSpeed: z.number().default(0.5),
   rotationSpeed: z.number().default(0.4),
   glowIntensity: z.number().default(0.75),
