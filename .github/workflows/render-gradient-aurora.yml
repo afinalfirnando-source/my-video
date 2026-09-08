@@ -39,7 +39,7 @@ jobs:
             "GradientAurora" \
             "out/gradient-aurora.mp4" \
             --codec=h264 \
-            --bitrate=80M \
+            --crf=5 \
             --preset=fast \
             --width=3840 \
             --height=2160 \
