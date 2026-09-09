@@ -24,7 +24,7 @@ jobs:
     if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.composition == '') }}
     strategy:
         matrix:
-          composition: ["NeuralMesh", "QuantumFoam", "HyperbolicTiling", "VolumetricCloudscape", "CrystalGrowth"]
+          composition: ["NeuralMesh", "QuantumFoam", "HyperbolicTiling", "VolumetricCloudscape", "CrystalGrowth", "FluidGradientWaves-Professional-1", "NeonGridTunnel-Professional-1", "AuroraBorealis-Professional-1", "PlasmaVortex-Professional-1", "MirrorChrome-Professional-1"]
 
     steps:
       - uses: actions/checkout@v4
@@ -51,10 +51,25 @@ jobs:
             "${{ matrix.composition }}" \
             "out/${{ matrix.composition }}.mp4" \
             --codec="${{ inputs.codec || 'h264' }}" \
-            --crf=18 \
+            --crf=10 \
+            --preset=fast \
             --width=3840 \
             --height=2160 \
             --fps=60
+
+      - name: Check file size
+        run: |
+          FILE_SIZE_MB=$(du -m "out/${{ matrix.composition }}.mp4" | cut -f1)
+          echo "File size: ${FILE_SIZE_MB} MB"
+          if [ "$FILE_SIZE_MB" -lt 100 ]; then
+            echo "ERROR: File size ${FILE_SIZE_MB} MB is below 100 MB target"
+            exit 1
+          elif [ "$FILE_SIZE_MB" -gt 250 ]; then
+            echo "ERROR: File size ${FILE_SIZE_MB} MB is above 250 MB target"
+            exit 1
+          else
+            echo "OK: File size ${FILE_SIZE_MB} MB is within 100-250 MB range"
+          fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
