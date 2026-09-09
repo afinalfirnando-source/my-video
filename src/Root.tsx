@@ -31,6 +31,16 @@ import { GradientAurora } from "./templates/gradient-aurora";
 import { GradientAuroraPropsSchema } from "./templates/gradient-aurora/types";
 import { GeometricPulse } from "./templates/geometric-pulse";
 import { GeometricPulsePropsSchema } from "./templates/geometric-pulse/types";
+import { FluidGradientWaves } from "./templates/fluid-gradient-waves";
+import { FluidGradientWavesPropsSchema } from "./templates/fluid-gradient-waves/types";
+import { NeonGridTunnel } from "./templates/neon-grid-tunnel";
+import { NeonGridTunnelPropsSchema } from "./templates/neon-grid-tunnel/types";
+import { AuroraBorealis } from "./templates/aurora-borealis";
+import { AuroraBorealisPropsSchema } from "./templates/aurora-borealis/types";
+import { PlasmaVortex } from "./templates/plasma-vortex";
+import { PlasmaVortexPropsSchema } from "./templates/plasma-vortex/types";
+import { MirrorChrome } from "./templates/mirror-chrome";
+import { MirrorChromePropsSchema } from "./templates/mirror-chrome/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -344,6 +354,115 @@ const videoSeries: any[] = [
     },
     category: "Abstract",
     description: "Pulsing geometric shapes with rotation, glow halos, and star particles",
+  },
+  {
+    id: "FluidGradientWaves-Professional-1",
+    component: FluidGradientWaves,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: FluidGradientWavesPropsSchema,
+    defaultProps: {
+      waveCount: 12,
+      flowSpeed: 0.4,
+      colorShift: 0.3,
+      amplitude: 0.7,
+      primaryColor: "#FF6B6B",
+      secondaryColor: "#A855F7",
+      tertiaryColor: "#14B8A6",
+      backgroundColor: "#0F172A",
+      glowIntensity: 0.8,
+    },
+    category: "Abstract",
+    description: "Smooth organic color gradients flowing like liquid silk",
+  },
+  {
+    id: "NeonGridTunnel-Professional-1",
+    component: NeonGridTunnel,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: NeonGridTunnelPropsSchema,
+    defaultProps: {
+      gridSize: 30,
+      flightSpeed: 0.8,
+      scanLineCount: 8,
+      pulseIntensity: 0.6,
+      primaryColor: "#FF2A6D",
+      secondaryColor: "#00F0FF",
+      backgroundColor: "#0A0A1A",
+      lineWidth: 2,
+      glowIntensity: 0.9,
+    },
+    category: "Synthwave",
+    description: "Endless perspective grid flying toward viewer with neon scan lines",
+  },
+  {
+    id: "AuroraBorealis-Professional-1",
+    component: AuroraBorealis,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: AuroraBorealisPropsSchema,
+    defaultProps: {
+      curtainCount: 15,
+      waveSpeed: 0.4,
+      starDensity: 200,
+      colorShift: 0.3,
+      primaryColor: "#00FF87",
+      secondaryColor: "#60A5FA",
+      tertiaryColor: "#A855F7",
+      backgroundColor: "#0F172A",
+      glowIntensity: 0.8,
+    },
+    category: "Nature",
+    description: "Northern lights curtains dancing across starry night sky",
+  },
+  {
+    id: "PlasmaVortex-Professional-1",
+    component: PlasmaVortex,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: PlasmaVortexPropsSchema,
+    defaultProps: {
+      particleCount: 1500,
+      vortexSpeed: 0.6,
+      spiralStrength: 0.8,
+      coreGlow: 0.9,
+      trailLength: 0.6,
+      primaryColor: "#FF8C00",
+      secondaryColor: "#FF0080",
+      backgroundColor: "#0A0A1A",
+      glowIntensity: 0.9,
+    },
+    category: "Energy",
+    description: "Hypnotic particle vortex with glowing core and trailing streaks",
+  },
+  {
+    id: "MirrorChrome-Professional-1",
+    component: MirrorChrome,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: MirrorChromePropsSchema,
+    defaultProps: {
+      rippleCount: 24,
+      flowSpeed: 0.4,
+      waveAmplitude: 0.6,
+      metallicShine: 0.8,
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF2A6D",
+      backgroundColor: "#0A0A1A",
+      glowIntensity: 0.8,
+    },
+    category: "Abstract",
+    description: "Flowing metallic liquid surface with neon reflections and ripples",
   },
 ];
 
