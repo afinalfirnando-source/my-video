@@ -1,0 +1,63 @@
+name: Render Loops
+
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: 'Video to render (leave empty for all)'
+        required: false
+        default: ''
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Bundle
+        run: npx remotion bundle
+
+      - name: Render Fluid Gradient Waves
+        if: ${{ github.event.inputs.video == '' || github.event.inputs.video == 'fluid-gradient-waves' }}
+        run: |
+          npx remotion render FluidGradientWaves-Professional-1 out/fluid-gradient-waves.mp4 --codec=h264 --crf=18 --width=3840 --height=2160 --fps=60
+
+      - name: Render Neon Grid Tunnel
+        if: ${{ github.event.inputs.video == '' || github.event.inputs.video == 'neon-grid-tunnel' }}
+        run: |
+          npx remotion render NeonGridTunnel-Professional-1 out/neon-grid-tunnel.mp4 --codec=h264 --crf=18 --width=3840 --height=2160 --fps=60
+
+      - name: Render Aurora Borealis
+        if: ${{ github.event.inputs.video == '' || github.event.inputs.video == 'aurora-borealis' }}
+        run: |
+          npx remotion render AuroraBorealis-Professional-1 out/aurora-borealis.mp4 --codec=h264 --crf=18 --width=3840 --height=2160 --fps=60
+
+      - name: Render Plasma Vortex
+        if: ${{ github.event.inputs.video == '' || github.event.inputs.video == 'plasma-vortex' }}
+        run: |
+          npx remotion render PlasmaVortex-Professional-1 out/plasma-vortex.mp4 --codec=h264 --crf=18 --width=3840 --height=2160 --fps=60
+
+      - name: Render Mirror Chrome
+        if: ${{ github.event.inputs.video == '' || github.event.inputs.video == 'mirror-chrome' }}
+        run: |
+          npx remotion render MirrorChrome-Professional-1 out/mirror-chrome.mp4 --codec=h264 --crf=18 --width=3840 --height=2160 --fps=60
+
+      - name: Upload all rendered videos
+        uses: actions/upload-artifact@v4
+        with:
+          name: new-loop-videos
+          path: out/*.mp4
+          retention-days: 7
