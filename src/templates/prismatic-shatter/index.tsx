@@ -4,6 +4,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import React, { useMemo, useRef } from "react";
+import { drawNoiseOverlay } from "../ui/noise";
 import type { PrismaticShatterProps } from "./types";
 
 const TOTAL_FRAMES = 900;
@@ -147,6 +148,8 @@ export const PrismaticShatter: React.FC<PrismaticShatterProps> = ({
     ctx.beginPath();
     ctx.arc(cx, cy, maxR * 0.06 + Math.sin(t * 2.2) * 2, 0, Math.PI * 2);
     ctx.fill();
+
+    drawNoiseOverlay(ctx, width, height, t, 0.07);
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;

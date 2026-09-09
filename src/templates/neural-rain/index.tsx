@@ -4,6 +4,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import React, { useMemo, useRef } from "react";
+import { drawNoiseOverlay } from "../ui/noise";
 import type { NeuralRainProps } from "./types";
 
 const TOTAL_FRAMES = 900;
@@ -154,6 +155,8 @@ export const NeuralRain: React.FC<NeuralRainProps> = ({
       ctx.arc(x, groundY + 4, 2.5, 0, Math.PI * 2);
       ctx.fill();
     }
+
+    drawNoiseOverlay(ctx, width, height, t, 0.07);
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;

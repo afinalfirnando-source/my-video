@@ -4,6 +4,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import React, { useMemo, useRef } from "react";
+import { drawNoiseOverlay } from "../ui/noise";
 import type { PlasmaArcFieldProps } from "./types";
 
 const TOTAL_FRAMES = 900;
@@ -253,6 +254,8 @@ export const PlasmaArcField: React.FC<PlasmaArcFieldProps> = ({
       ctx.arc(p.x, p.y, 2.6 + p.depth * 1.6, 0, TWO_PI);
       ctx.fill();
     }
+
+    drawNoiseOverlay(ctx, width, height, t, 0.07);
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;
