@@ -61,6 +61,16 @@ import { HexagonFlow } from "./templates/hexagon-flow";
 import { HexagonFlowPropsSchema } from "./templates/hexagon-flow/types";
 import { OrbitalResonance } from "./templates/orbital-resonance";
 import { OrbitalResonancePropsSchema } from "./templates/orbital-resonance/types";
+import { PlasmaFlux } from "./templates/plasma-flux";
+import { PlasmaFluxPropsSchema } from "./templates/plasma-flux/types";
+import { WaveLattice } from "./templates/wave-lattice";
+import { WaveLatticePropsSchema } from "./templates/wave-lattice/types";
+import { ChromaSwirl } from "./templates/chroma-swirl";
+import { ChromaSwirlPropsSchema } from "./templates/chroma-swirl/types";
+import { PixelGlide } from "./templates/pixel-glide";
+import { PixelGlidePropsSchema } from "./templates/pixel-glide/types";
+import { LuminousVeil } from "./templates/luminous-veil";
+import { LuminousVeilPropsSchema } from "./templates/luminous-veil/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -700,6 +710,117 @@ const videoSeries: any[] = [
     },
     category: "Space",
     description: "Coupled integer-frequency orbital bodies with trails and resonance slingshots",
+  },
+  // Episode 11: Fluid plasma - layered color gratings
+  {
+    id: "PlasmaFlux-Professional-2",
+    component: PlasmaFlux,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: PlasmaFluxPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      bandCount: 6,
+      speed: 0.55,
+      hueCycles: 1,
+      glowIntensity: 0.75,
+    },
+    category: "Plasma",
+    description: "Additive color grating plasma with shifting hue bands",
+  },
+  // Episode 12: Interference - radial wave lattice
+  {
+    id: "WaveLattice-Professional-2",
+    component: WaveLattice,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: WaveLatticePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      focusCount: 6,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Interference",
+    description: "Concentric ring waves from moving foci with chromatic overlap",
+  },
+  // Episode 13: Swirl - rotating spiral arms
+  {
+    id: "ChromaSwirl-Professional-2",
+    component: ChromaSwirl,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: ChromaSwirlPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      armCount: 8,
+      swirlTurns: 3,
+      pointCount: 180,
+      rotationSpeed: 2,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Motion",
+    description: "Spinning spiral arms with periodic full rotations and hue drift",
+  },
+  // Episode 14: Grid glide - sliding cells
+  {
+    id: "PixelGlide-Professional-2",
+    component: PixelGlide,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: PixelGlidePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      cols: 44,
+      rows: 24,
+      amplitude: 30,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Geometry",
+    description: "Phase-shifted grid cells pulsing and sliding in sync over the cycle",
+  },
+  // Episode 15: Curtains - layered sine waves
+  {
+    id: "LuminousVeil-Professional-2",
+    component: LuminousVeil,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: LuminousVeilPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      curtainCount: 5,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Flow",
+    description: "Stack of sine wave curtains sweeping with shifting color bands",
   },
 ];
 

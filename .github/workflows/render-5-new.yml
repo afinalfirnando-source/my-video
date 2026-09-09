@@ -1,26 +1,25 @@
-name: Render Amazing Background Videos
+name: Render 5 New Videos
 
 on:
   push:
     branches: [main, master]
     paths:
-      - "src/templates/hyperspace-rush/**"
-      - "src/templates/prismatic-shatter/**"
-      - "src/templates/cosmic-web/**"
-      - "src/templates/neural-rain/**"
-      - "src/templates/plasma-arc-field/**"
-      - "src/templates/lissajous-resonance/**"
-      - "src/templates/kinetic-gears/**"
-      - "src/templates/spirograph-bloom/**"
-      - "src/templates/hexagon-flow/**"
-      - "src/templates/orbital-resonance/**"
+      - "src/templates/plasma-flux/**"
+      - "src/templates/wave-lattice/**"
+      - "src/templates/chroma-swirl/**"
+      - "src/templates/pixel-glide/**"
+      - "src/templates/luminous-veil/**"
       - "src/templates/ui/noise.ts"
+      - "src/templates/ui/palette.ts"
+      - "src/Root.tsx"
       - "remotion.config.ts"
-      - ".github/workflows/render-5-amazing.yml"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/render-5-new.yml"
   workflow_dispatch:
     inputs:
       crf:
-        description: "CRF (lower = larger file). Default 10 yields ~150-210 MB per 4K clip."
+        description: "CRF (lower = larger file). Default 10 yields ~100-220 MB per 4K clip."
         required: false
         default: "10"
       codec:
@@ -36,18 +35,11 @@ jobs:
       fail-fast: false
       matrix:
         composition:
-          # first batch
-          - "HyperspaceRush-Professional-1"
-          - "PrismaticShatter-Professional-1"
-          - "CosmicWeb-Professional-1"
-          - "NeuralRain-Professional-1"
-          - "PlasmaArcField-Professional-1"
-          # second batch (new concepts)
-          - "LissajousResonance-Professional-1"
-          - "KineticGears-Professional-1"
-          - "SpirographBloom-Professional-1"
-          - "HexagonFlow-Professional-1"
-          - "OrbitalResonance-Professional-1"
+          - "PlasmaFlux-Professional-2"
+          - "WaveLattice-Professional-2"
+          - "ChromaSwirl-Professional-2"
+          - "PixelGlide-Professional-2"
+          - "LuminousVeil-Professional-2"
 
     steps:
       - uses: actions/checkout@v4
