@@ -1,0 +1,98 @@
+name: Render 5 Amazing Videos
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "src/templates/hyperspace-rush/**"
+      - "src/templates/prismatic-shatter/**"
+      - "src/templates/cosmic-web/**"
+      - "src/templates/neural-rain/**"
+      - "src/templates/plasma-arc-field/**"
+      - "src/Root.tsx"
+      - "remotion.config.ts"
+      - ".github/workflows/render-5-amazing.yml"
+  workflow_dispatch:
+    inputs:
+      crf:
+        description: "CRF (lower = larger file). Default 10 targets 100-250 MB at 4K60."
+        required: false
+        default: "10"
+      codec:
+        description: "Video codec"
+        required: false
+        default: "h264"
+
+jobs:
+  render:
+    name: Render ${{ matrix.composition }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        composition:
+          - "HyperspaceRush-Professional-1"
+          - "PrismaticShatter-Professional-1"
+          - "CosmicWeb-Professional-1"
+          - "NeuralRain-Professional-1"
+          - "PlasmaArcField-Professional-1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Bundle
+        run: npx remotion bundle
+
+      - name: Render ${{ matrix.composition }}
+        run: |
+          npx remotion render \
+            "${{ matrix.composition }}" \
+            "out/${{ matrix.composition }}.mp4" \
+            --codec="${{ inputs.codec || 'h264' }}" \
+            --crf=${{ inputs.crf || '10' }} \
+            --preset=fast \
+            --width=3840 \
+            --height=2160 \
+            --fps=60
+
+      - name: Check file size (100-250 MB)
+        run: |
+          FILE_SIZE_BYTES=$(stat -c%s "out/${{ matrix.composition }}.mp4")
+          FILE_SIZE_MB=$((FILE_SIZE_BYTES / 1024 / 1024))
+          echo "File: ${{ matrix.composition }}.mp4"
+          echo "File size: ${FILE_SIZE_MB} MB"
+          if [ "$FILE_SIZE_MB" -lt 100 ]; then
+            echo "ERROR: File size ${FILE_SIZE_MB} MB is below 100 MB target"
+            echo "NOTE: Lower --crf (e.g. 8) for a larger file via workflow_dispatch."
+            exit 1
+          elif [ "$FILE_SIZE_MB" -gt 250 ]; then
+            echo "ERROR: File size ${FILE_SIZE_MB} MB is above 250 MB target"
+            echo "NOTE: Raise --crf (e.g. 14) for a smaller file via workflow_dispatch."
+            exit 1
+          else
+            echo "OK: File size ${FILE_SIZE_MB} MB is within 100-250 MB range"
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.composition }}-video"
+          path: "out/${{ matrix.composition }}.mp4"
+          retention-days: 14
+
+      - name: Report media info
+        run: |
+          ffprobe -v error -show_entries format=duration,size,bit_rate -of default=noprint_wrappers=1 "out/${{ matrix.composition }}.mp4"

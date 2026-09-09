@@ -41,6 +41,16 @@ import { PlasmaVortex } from "./templates/plasma-vortex";
 import { PlasmaVortexPropsSchema } from "./templates/plasma-vortex/types";
 import { MirrorChrome } from "./templates/mirror-chrome";
 import { MirrorChromePropsSchema } from "./templates/mirror-chrome/types";
+import { HyperspaceRush } from "./templates/hyperspace-rush";
+import { HyperspaceRushPropsSchema } from "./templates/hyperspace-rush/types";
+import { PrismaticShatter } from "./templates/prismatic-shatter";
+import { PrismaticShatterPropsSchema } from "./templates/prismatic-shatter/types";
+import { CosmicWeb } from "./templates/cosmic-web";
+import { CosmicWebGLPropsSchema } from "./templates/cosmic-web/types";
+import { NeuralRain } from "./templates/neural-rain";
+import { NeuralRainPropsSchema } from "./templates/neural-rain/types";
+import { PlasmaArcField } from "./templates/plasma-arc-field";
+import { PlasmaArcFieldPropsSchema } from "./templates/plasma-arc-field/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -463,6 +473,114 @@ const videoSeries: any[] = [
     },
     category: "Abstract",
     description: "Flowing metallic liquid surface with neon reflections and ripples",
+  },
+  {
+    id: "HyperspaceRush-Professional-1",
+    component: HyperspaceRush,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: HyperspaceRushPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      streakCount: 420,
+      starDensity: 320,
+      pulseSpeed: 0.7,
+      glowIntensity: 0.9,
+    },
+    category: "Sci-Fi",
+    description: "First-person hyperspace jump through radiant warp streaks and energy rings",
+  },
+  {
+    id: "PrismaticShatter-Professional-1",
+    component: PrismaticShatter,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: PrismaticShatterPropsSchema,
+    defaultProps: {
+      primaryColor: "#FF00FF",
+      secondaryColor: "#00F0FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      shardCount: 160,
+      spinSpeed: 0.4,
+      dispersion: 0.8,
+      glowIntensity: 0.85,
+      fractureDensity: 3,
+    },
+    category: "Abstract",
+    description: "Geometric shards bursting with prismatic dispersion and chromatic flares",
+  },
+  {
+    id: "CosmicWeb-Professional-1",
+    component: CosmicWeb,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: CosmicWebGLPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      nodeCount: 80,
+      edgeDensity: 2.2,
+      flowSpeed: 0.5,
+      rotationSpeed: 0.25,
+      glowIntensity: 0.85,
+    },
+    category: "Space",
+    description: "Rotating 3D cosmic filament web with flowing luminous nodes",
+  },
+  {
+    id: "NeuralRain-Professional-1",
+    component: NeuralRain,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: NeuralRainPropsSchema,
+    defaultProps: {
+      primaryColor: "#00FF80",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#00F0FF",
+      backgroundColor: "#050014",
+      columnCount: 80,
+      maxDepth: 5,
+      fallSpeed: 0.85,
+      glyphCount: 92,
+      glowIntensity: 0.9,
+    },
+    category: "Cyberpunk",
+    description: "3D parallax neon rain with depth layers and ground reflection",
+  },
+  {
+    id: "PlasmaArcField-Professional-1",
+    component: PlasmaArcField,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: PlasmaArcFieldPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#02000A",
+      nodeCount: 70,
+      sparkDensity: 180,
+      pulseSpeed: 0.6,
+      glowIntensity: 0.95,
+    },
+    category: "Energy",
+    description: "Crackling plasma arcs and electric field lines between charged nodes",
   },
 ];
 
