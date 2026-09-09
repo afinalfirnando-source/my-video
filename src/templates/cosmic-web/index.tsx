@@ -98,8 +98,8 @@ export const CosmicWeb: React.FC<CosmicWebGLProps> = ({
     const radius = Math.min(width, height) * 0.42;
     const eye = 820;
 
-    const ay = t * 0.35 * rotationSpeed;
-    const ax = t * 0.18 * rotationSpeed + 0.6;
+    const ay = t * (1 + Math.round(rotationSpeed * 2));
+    const ax = 0.6 + Math.sin(t * (0.6 + rotationSpeed)) * 0.15;
 
     const project = (p: Node3): { x: number; y: number; depth: number } => {
       const cosAy = Math.cos(ay);

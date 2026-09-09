@@ -79,7 +79,7 @@ export const NeuralRain: React.FC<NeuralRainProps> = ({
       const x = (i / 24) * width;
       ctx.beginPath();
       ctx.moveTo(x, groundY);
-      ctx.lineTo(x + (t * 0.05), height);
+      ctx.lineTo(x + Math.sin(t) * 2, height);
       ctx.stroke();
     }
     ctx.globalAlpha = 1;

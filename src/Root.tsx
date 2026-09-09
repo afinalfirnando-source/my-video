@@ -51,6 +51,16 @@ import { NeuralRain } from "./templates/neural-rain";
 import { NeuralRainPropsSchema } from "./templates/neural-rain/types";
 import { PlasmaArcField } from "./templates/plasma-arc-field";
 import { PlasmaArcFieldPropsSchema } from "./templates/plasma-arc-field/types";
+import { LissajousResonance } from "./templates/lissajous-resonance";
+import { LissajousResonancePropsSchema } from "./templates/lissajous-resonance/types";
+import { KineticGears } from "./templates/kinetic-gears";
+import { KineticGearsPropsSchema } from "./templates/kinetic-gears/types";
+import { SpirographBloom } from "./templates/spirograph-bloom";
+import { SpirographBloomPropsSchema } from "./templates/spirograph-bloom/types";
+import { HexagonFlow } from "./templates/hexagon-flow";
+import { HexagonFlowPropsSchema } from "./templates/hexagon-flow/types";
+import { OrbitalResonance } from "./templates/orbital-resonance";
+import { OrbitalResonancePropsSchema } from "./templates/orbital-resonance/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -581,6 +591,115 @@ const videoSeries: any[] = [
     },
     category: "Energy",
     description: "Crackling plasma arcs and electric field lines between charged nodes",
+  },
+  {
+    id: "LissajousResonance-Professional-1",
+    component: LissajousResonance,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: LissajousResonancePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      gridCols: 11,
+      gridRows: 7,
+      linkRadius: 48,
+      freqSpread: 3,
+      glowIntensity: 0.85,
+    },
+    category: "Geometry",
+    description: "Resonating lattice of points on integer-frequency Lissajous orbits",
+  },
+  {
+    id: "KineticGears-Professional-1",
+    component: KineticGears,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: KineticGearsPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      gearCount: 4,
+      teethSharpness: 8,
+      rotationSpeed: 2,
+      trailLength: 34,
+      glowIntensity: 0.9,
+    },
+    category: "Mechanical",
+    description: "Interlocking rotating gears with light trails and connecting beams",
+  },
+  {
+    id: "SpirographBloom-Professional-1",
+    component: SpirographBloom,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: SpirographBloomPropsSchema,
+    defaultProps: {
+      primaryColor: "#FF00FF",
+      secondaryColor: "#00F0FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      lobeCount: 5,
+      ratioSpread: 4,
+      swirlSpeed: 1,
+      glowIntensity: 0.85,
+    },
+    category: "Abstract",
+    description: "Nested integer-ratio rosettes blooming with traveling nodes",
+  },
+  {
+    id: "HexagonFlow-Professional-1",
+    component: HexagonFlow,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: HexagonFlowPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      hexSize: 72,
+      waveSpeed: 0.6,
+      colorShift: 0.4,
+      flowIntensity: 0.8,
+      glowIntensity: 0.85,
+    },
+    category: "Geometry",
+    description: "Tessellated hex grid flowing with traveling waves and hue shifts",
+  },
+  {
+    id: "OrbitalResonance-Professional-1",
+    component: OrbitalResonance,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: OrbitalResonancePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      bodyCount: 6,
+      resonance: 2,
+      trailLength: 24,
+      orbitTilt: 0.6,
+      glowIntensity: 0.9,
+    },
+    category: "Space",
+    description: "Coupled integer-frequency orbital bodies with trails and resonance slingshots",
   },
 ];
 

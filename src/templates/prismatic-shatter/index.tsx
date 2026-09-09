@@ -81,7 +81,7 @@ export const PrismaticShatter: React.FC<PrismaticShatterProps> = ({
 
     const burst = Math.pow(Math.sin(t * 1.1) * 0.5 + 0.5, fractureDensity / 1.5);
     const shatter = burst * dispersion;
-    const spinT = t * spinSpeed;
+    const spinT = t * (1 + Math.round(spinSpeed * 2));
 
     ctx.shadowBlur = 0;
 
@@ -111,7 +111,7 @@ export const PrismaticShatter: React.FC<PrismaticShatterProps> = ({
       const r = maxR * (0.5 + (shard.ring % 1) * 0.4) * pop;
       const x = cx + Math.cos(a) * r;
       const y = cy + Math.sin(a) * r;
-      const rot = t * shard.spin + shard.hue * 0.017;
+      const rot = t + shard.spin;
 
       const localBurst = Math.sin(t * 1.1 + shard.hue * 0.05) * 0.5 + 0.5;
 

@@ -138,8 +138,8 @@ export const PlasmaArcField: React.FC<PlasmaArcFieldProps> = ({
     const radius = Math.min(width, height) * 0.38;
     const eye = 720;
 
-    const ay = t * 0.22;
-    const ax = t * 0.11 + 0.4;
+    const ay = t;
+    const ax = 0.4 + Math.sin(t * 0.7) * 0.12;
 
     const project = (p: Node3): { x: number; y: number; depth: number } => {
       const cosAy = Math.cos(ay);
