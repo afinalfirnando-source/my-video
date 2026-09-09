@@ -117,3 +117,5 @@ jobs:
         with:
           name: "${{ inputs.composition }}-video"
           path: "out/${{ inputs.composition }}.mp4"
+
+# trigger reload
