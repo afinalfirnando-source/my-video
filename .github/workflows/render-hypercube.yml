@@ -38,7 +38,7 @@ jobs:
             "out/HypercubeSuite-Professional-5.mp4" \
             --codec="${{ inputs.codec || 'h264' }}" \
             --crf=1 \
-            --preset=fast \
+            --preset=ultrafast \
             --width=3840 \
             --height=2160 \
             --fps=60
