@@ -66,7 +66,7 @@ jobs:
           echo "BLENDER_PATH=$(pwd)/$(ls -d blender-*/)" >> $GITHUB_ENV
         fi
         echo "BLENDER_PATH found: ${{ env.BLENDER_PATH }}"
-        "${{ env.BLENDER_PATH }}blender" --version 2>&1
+        "${{ env.BLENDER_PATH }}blender" --version 2>&1 || echo "Version check: Blender path not in context yet (OK for this step, used in next step)"
 
     - name: Setup directories
       run: |
