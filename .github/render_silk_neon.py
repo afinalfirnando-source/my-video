@@ -5,7 +5,10 @@ scene = bpy.context.scene
 RENDER_DIR = "/tmp/renders"
 os.makedirs(RENDER_DIR, exist_ok=True)
 
-scene.render.engine = 'BLENDER_EEVEE'
+try:
+    scene.render.engine = 'BLENDER_EEVEE_NEXT'
+except:
+    scene.render.engine = 'BLENDER_EEVEE'
 scene.render.resolution_x = 1280
 scene.render.resolution_y = 720
 scene.render.resolution_percentage = 100
@@ -16,8 +19,14 @@ scene.render.image_settings.file_format = 'PNG'
 scene.render.image_settings.color_mode = 'RGB'
 scene.render.image_settings.color_depth = '8'
 scene.render.use_file_extension = True
-scene.eevee.taa_render_samples = 8
-scene.eevee.taa_samples = 8
+try:
+    scene.eevee.taa_render_samples = 8
+    scene.eevee.taa_samples = 8
+except:
+    try:
+        scene.eevee.taa_render_samples = 8
+    except:
+        pass
 
 world = bpy.data.worlds.new("World")
 scene.world = world
