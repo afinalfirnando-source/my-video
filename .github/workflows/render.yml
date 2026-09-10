@@ -35,7 +35,9 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget xz-utils ffmpeg xvfb libgl1-mesa-glx libglu1-mesa
+        sudo apt-get install -y --no-install-recommends \
+          wget xz-utils ffmpeg xvfb libgl1-mesa-glx libglu1-mesa 2>&1 || true
+        echo "Packages installed"
 
     - name: Download Blender
       run: |
@@ -53,7 +55,7 @@ jobs:
         fi
         tar -xJf blender.tar.xz
         echo "BLENDER_PATH=$(pwd)/$(ls -d blender-*/)" >> $GITHUB_ENV
-        echo "Blender path: ${{ env.BLENDER_PATH }}"
+        echo "Blender version:"
         "${{ env.BLENDER_PATH }}blender" --version
 
     - name: Setup directories
@@ -73,12 +75,19 @@ jobs:
         Xvfb :0 -screen 0 1024x768x24 &
         sleep 2
         
+        echo "Render script contents:"
+        cat render_frames.py | head -30
+        
         "${{ env.BLENDER_PATH }}blender" \
           --background \
-          --python render_frames.py
+          --python render_frames.py 2>&1 | tee /tmp/blender_log.txt
+        
+        echo "=== Blender Log (last 50 lines) ==="
+        tail -50 /tmp/blender_log.txt
         
         echo "Rendered frames:"
         ls -la ${{ env.RENDER_DIR }} | wc -l
+        ls ${{ env.RENDER_DIR }} | head -5
 
     - name: Upload frames
       uses: actions/upload-artifact@v4
