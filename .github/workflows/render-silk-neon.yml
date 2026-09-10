@@ -121,6 +121,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: collected_frames/
+        pattern: frames-*
         merge-multiple: true
 
     - name: Check frames collected
