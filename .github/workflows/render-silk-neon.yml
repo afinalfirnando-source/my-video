@@ -36,29 +36,37 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends \
-          wget xz-utils ffmpeg xvfb libgl1-mesa-glx libglu1-mesa 2>&1 || true
+          wget xz-utils ffmpeg xvfb libgl1 libglu1-mesa libxrender1 libxcursor1 libxi6 libxext6 2>&1 || true
         echo "Packages installed"
 
     - name: Download Blender
       run: |
+        set +e
         # Try snap first
-        if snap install blender --classic 2>/dev/null; then
+        snap install blender --classic 2>/dev/null
+        if [ $? -eq 0 ]; then
           echo "BLENDER_PATH=$(which blender)" >> $GITHUB_ENV
           echo "Blender installed via snap"
         else
           echo "Snap not available, trying direct download..."
-          BLENDER_VERSION="4.2"
-          URL="https://download.blender.org/release/Blender${BLENDER_VERSION}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
-          curl -L --retry 3 --retry-delay 5 -f "$URL" -o blender.tar.xz
+          BLENDER_VERSION="4.2.0"
+          URL="https://download.blender.org/release/Blender4.2/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+          echo "Downloading from: $URL"
+          curl -L --retry 5 --retry-delay 10 -f "$URL" -o blender.tar.xz
           if [ $? -ne 0 ]; then
-            echo "Direct download failed, trying wget..."
-            wget --timeout=60 --tries=3 "$URL" -O blender.tar.xz
+            echo "curl failed, trying wget..."
+            wget --timeout=120 --tries=5 "$URL" -O blender.tar.xz
           fi
+          if [ ! -f blender.tar.xz ]; then
+            echo "ERROR: Download failed"
+            exit 1
+          fi
+          ls -la blender.tar.xz
           tar -xJf blender.tar.xz
           echo "BLENDER_PATH=$(pwd)/$(ls -d blender-*/)" >> $GITHUB_ENV
         fi
-        echo "Blender path: ${{ env.BLENDER_PATH }}"
-        "${{ env.BLENDER_PATH }}blender" --version 2>&1 || echo "Blender version check failed"
+        echo "BLENDER_PATH found: ${{ env.BLENDER_PATH }}"
+        "${{ env.BLENDER_PATH }}blender" --version 2>&1
 
     - name: Setup directories
       run: |
