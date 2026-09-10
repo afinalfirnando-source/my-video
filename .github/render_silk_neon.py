@@ -98,9 +98,16 @@ bsdf = nt.nodes.new('ShaderNodeBsdfPrincipled')
 bsdf.inputs['Base Color'].default_value = (0.12, 0.01, 0.3, 1.0)
 bsdf.inputs['Metallic'].default_value = 0.95
 bsdf.inputs['Roughness'].default_value = 0.08
-bsdf.inputs['Specular'].default_value = 0.5
-bsdf.inputs['Emission'].default_value = (0.9, 0.4, 0.95, 1.0)
-bsdf.inputs['Emission Strength'].default_value = 0.1
+
+try:
+    bsdf.inputs['Specular'].default_value = 0.5
+except KeyError:
+    pass
+try:
+    bsdf.inputs['Emission'].default_value = (0.9, 0.4, 0.95, 1.0)
+    bsdf.inputs['Emission Strength'].default_value = 0.1
+except KeyError:
+    pass
 nt.links.new(bump_n.outputs['Normal'], bsdf.inputs['Normal'])
 
 out_n = nt.nodes.new('ShaderNodeOutputMaterial')
@@ -198,13 +205,28 @@ tree.nodes.clear()
 rl = tree.nodes.new('CompositorNodeRLayers')
 
 glare = tree.nodes.new('CompositorNodeGlare')
-glare.glare_type = 'FOG_GLOW'
-glare.mix = 0.5  # Strength
-glare.iterations = 2
+try:
+    glare.glare_type = 'FOG_GLOW'
+except:
+    pass
+try:
+    glare.mix = 0.5
+except:
+    pass
+try:
+    glare.iterations = 2
+except:
+    pass
 
 hue = tree.nodes.new('CompositorNodeHueSat')
-hue.inputs['Saturation'].default_value = 1.1
-hue.inputs['Value'].default_value = 1.1
+try:
+    hue.inputs['Saturation'].default_value = 1.1
+except KeyError:
+    pass
+try:
+    hue.inputs['Value'].default_value = 1.1
+except KeyError:
+    pass
 
 out_node = tree.nodes.new('CompositorNodeComposite')
 
