@@ -83,6 +83,11 @@ const rotatePlane = (plane: "xy" | "xz" | "xw" | "yz" | "yw" | "zw", angle: numb
 
 const PLANES: ("xy" | "xz" | "xw" | "yz" | "yw" | "zw")[] = ["xy", "xz", "xw", "yz", "yw", "zw"];
 
+const seeded = (seed: number): number => {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+};
+
 
 
 export const HypercubeSuite: React.FC<HypercubeSuiteProps> = ({
@@ -117,15 +122,72 @@ export const HypercubeSuite: React.FC<HypercubeSuiteProps> = ({
     }));
   }, [layerCount]);
 
+  const stars = useMemo(() => {
+    return Array.from({ length: 3000 }, (_, i) => ({
+      x: seeded(i * 17.1) * width,
+      y: seeded(i * 17.1 + 0.5) * height,
+      base: seeded(i * 17.1 + 1) * 0.5 + 0.2,
+      tw: seeded(i * 17.1 + 2) * 3 + 1,
+      sz: seeded(i * 17.1 + 3) * 1.5 + 0.5,
+    }));
+  }, [width, height]);
+
+  const noiseCanvas = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    const c = document.createElement("canvas");
+    c.width = 480;
+    c.height = 270;
+    return c;
+  }, []);
+
   const ctx = canvasRef.current?.getContext("2d");
 
   if (ctx) {
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
 
+    if (noiseCanvas) {
+      const nc = noiseCanvas.getContext("2d", { willReadFrequently: true });
+      if (nc) {
+        const img = nc.createImageData(480, 270);
+        const d = img.data;
+        const frameSeed = t * 60;
+        for (let i = 0; i < d.length; i += 4) {
+          const px = (i / 4) % 480;
+          const py = Math.floor((i / 4) / 480);
+          const v = seeded(px * 0.1 + py * 0.1 + frameSeed * 0.13) * 255;
+          d[i] = v;
+          d[i + 1] = v;
+          d[i + 2] = v;
+          d[i + 3] = 255;
+        }
+        nc.putImageData(img, 0, 0);
+        ctx.globalAlpha = 0.15;
+        ctx.imageSmoothingEnabled = true;
+        ctx.globalCompositeOperation = "lighter";
+        ctx.drawImage(noiseCanvas, 0, 0, width, height);
+      }
+    }
+
     ctx.globalCompositeOperation = "lighter";
     ctx.lineCap = "round";
     ctx.shadowColor = toCssRgb([sr, sg, sb]);
+    ctx.shadowBlur = 16 * glowIntensity;
+
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    for (const s of stars) {
+      const tw = Math.sin(t * s.tw) * 0.5 + 0.5;
+      const alpha = (s.base + tw * 0.3) * 0.4;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = toCssRgb([
+        Math.round(pr * 0.3),
+        Math.round(pg * 0.3),
+        Math.round(pb * 0.3),
+      ]);
+      ctx.fillRect(s.x, s.y, 1, 1);
+    }
+
     ctx.shadowBlur = 16 * glowIntensity;
 
     const freqs = [3, 5, 2, 7, 4, 6];
@@ -171,11 +233,25 @@ export const HypercubeSuite: React.FC<HypercubeSuiteProps> = ({
         ctx.lineTo(b.x, b.y);
         ctx.stroke();
       }
+
+      ctx.globalAlpha = 0.8;
+      ctx.shadowBlur = 24 * glowIntensity;
+      for (let ei = 0; ei < TESSERACT_EDGES.length; ei++) {
+        const [vi, vj] = TESSERACT_EDGES[ei];
+        const edgeT = ((t + ei * 0.3 + li * 1.7 + layer.phase) % PI2) / PI2;
+        const pa = projected[vi];
+        const pb = projected[vj];
+        const ex = pa.x + (pb.x - pa.x) * edgeT;
+        const ey = pa.y + (pb.y - pa.y) * edgeT;
+        ctx.beginPath();
+        ctx.arc(ex, ey, 2.5 + layer.scale * 2, 0, PI2);
+        ctx.fill();
+      }
     }
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;
-    drawNoiseOverlay(ctx, width, height, t, 0.2);
+    drawNoiseOverlay(ctx, width, height, t, 0.15);
   }
 
   return (
