@@ -1,121 +1,136 @@
-name: Render Background Animations
+name: Render Anime Abstract Silk Neon
 
-on:
-  push:
-    branches: [main, master]
-    paths:
-      - "src/**"
-      - "remotion.config.ts"
+on: 
   workflow_dispatch:
-    inputs:
-      composition:
-        description: "Composition ID (leave empty to render all)"
-        required: false
-        default: ""
-      codec:
-        description: "Video codec"
-        required: false
-        default: "h264"
+  push:
+    paths:
+      - '.github/render_silk_neon.py'
+      - '.github/workflows/render.yml'
+
+env:
+  RENDER_DIR: /tmp/renders
+  OUTPUT_DIR: /tmp/output
 
 jobs:
-  render-all:
-    name: Render All Compositions
+  render:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.composition == '') }}
     strategy:
-        matrix:
-          composition: ["NeuralMesh", "QuantumFoam", "HyperbolicTiling", "VolumetricCloudscape", "CrystalGrowth", "FluidGradientWaves-Professional-1", "NeonGridTunnel-Professional-1", "AuroraBorealis-Professional-1", "PlasmaVortex-Professional-1", "MirrorChrome-Professional-1"]
-
+      fail-fast: false
+      matrix:
+        start-frame: [1, 181, 361, 541, 721]
+        end-frame: [180, 360, 540, 720, 900]
+    
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget xz-utils ffmpeg xvfb libgl1-mesa-glx libglu1-mesa mesa-utils
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
+    - name: Download Blender
+      run: |
+        BLENDER_VERSION="5.0"
+        echo "Trying Blender ${BLENDER_VERSION}..."
+        URL="https://download.blender.org/release/Blender${BLENDER_VERSION}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+        if wget -q --spider "$URL" 2>/dev/null; then
+          echo "Blender ${BLENDER_VERSION} available, downloading..."
+          wget -q "$URL" -O blender.tar.xz
+        else
+          echo "Blender ${BLENDER_VERSION} not available, trying 4.2..."
+          BLENDER_VERSION="4.2"
+          URL="https://download.blender.org/release/Blender${BLENDER_VERSION}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+          wget -q "$URL" -O blender.tar.xz
+        fi
+        tar -xJf blender.tar.xz
+        echo "BLENDER_PATH=$(pwd)/$(ls -d blender-*/)" >> $GITHUB_ENV
+        echo "Blender path: ${{ env.BLENDER_PATH }}"
+        "${{ env.BLENDER_PATH }}blender" --version
 
-      - name: Install dependencies
-        run: npm ci
+    - name: Setup directories
+      run: |
+        mkdir -p ${{ env.RENDER_DIR }}
+        mkdir -p ${{ env.OUTPUT_DIR }}
 
-      - name: Install FFmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+    - name: Create render script with frame range
+      run: |
+        sed 's/scene.frame_start = 1/scene.frame_start = ${{ matrix.start-frame }}/' .github/render_silk_neon.py | \
+          sed 's/scene.frame_end = 900/scene.frame_end = ${{ matrix.end-frame }}/' > render_frames.py
+        echo "Frame range: ${{ matrix.start-frame }}-${{ matrix.end-frame }}"
 
-      - name: Bundle
-        run: npx remotion bundle
+    - name: Render frames
+      run: |
+        export DISPLAY=:0
+        Xvfb :0 -screen 0 1024x768x24 &
+        sleep 2
+        
+        "${{ env.BLENDER_PATH }}blender" \
+          --background \
+          --python render_frames.py
+        
+        echo "Rendered frames:"
+        ls -la ${{ env.RENDER_DIR }} | wc -l
 
-      - name: Render ${{ matrix.composition }}
-        run: |
-          npx remotion render \
-            "${{ matrix.composition }}" \
-            "out/${{ matrix.composition }}.mp4" \
-            --codec="${{ inputs.codec || 'h264' }}" \
-            --crf=10 \
-            --preset=fast \
-            --width=3840 \
-            --height=2160 \
-            --fps=60
+    - name: Upload frames
+      uses: actions/upload-artifact@v4
+      with:
+        name: frames-${{ matrix.start-frame }}-${{ matrix.end-frame }}
+        path: ${{ env.RENDER_DIR }}/*.png
+        retention-days: 7
 
-      - name: Check file size
-        run: |
-          FILE_SIZE_MB=$(du -m "out/${{ matrix.composition }}.mp4" | cut -f1)
-          echo "File size: ${FILE_SIZE_MB} MB"
-          if [ "$FILE_SIZE_MB" -lt 100 ]; then
-            echo "ERROR: File size ${FILE_SIZE_MB} MB is below 100 MB target"
-            exit 1
-          elif [ "$FILE_SIZE_MB" -gt 250 ]; then
-            echo "ERROR: File size ${FILE_SIZE_MB} MB is above 250 MB target"
-            exit 1
-          else
-            echo "OK: File size ${FILE_SIZE_MB} MB is within 100-250 MB range"
-          fi
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: "${{ matrix.composition }}-video"
-          path: "out/${{ matrix.composition }}.mp4"
-
-  render-single:
-    name: Render Single Composition
+  compile:
+    needs: render
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.composition != '' }}
-
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    
+    - name: Install ffmpeg
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+    
+    - name: Download all frames
+      uses: actions/download-artifact@v4
+      with:
+        path: collected_frames/
+        merge-multiple: true
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
+    - name: Check frames collected
+      run: |
+        echo "Total files in collected_frames:"
+        ls collected_frames/
+        echo "Frame count:"
+        ls collected_frames/*.png 2>/dev/null | wc -l
 
-      - name: Install dependencies
-        run: npm ci
+    - name: Compile video
+      run: |
+        mkdir -p output
+        # List frames to verify naming
+        ls collected_frames/ | head -5
+        ls collected_frames/ | tail -5
+        
+        # Try compiling
+        ffmpeg -y -framerate 60 \
+          -i collected_frames/frame_%04d.png \
+          -c:v libx264 \
+          -crf 23 \
+          -pix_fmt yuv420p \
+          -vf "scale=1280:720" \
+          output/AbstractSilkNeonWaves.mp4
+        
+        ls -la output/
 
-      - name: Install FFmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+    - name: Upload video
+      uses: actions/upload-artifact@v4
+      with:
+        name: abstract-silk-neon-waves-full
+        path: output/AbstractSilkNeonWaves.mp4
+        retention-days: 30
+        if-no-files-found: warn
 
-      - name: Bundle
-        run: npx remotion bundle
-
-      - name: Render ${{ inputs.composition }}
-        run: |
-          npx remotion render \
-            "${{ inputs.composition }}" \
-            "out/${{ inputs.composition }}.mp4" \
-            --codec="${{ inputs.codec || 'h264' }}" \
-            --crf=18 \
-            --width=3840 \
-            --height=2160 \
-            --fps=60
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: "${{ inputs.composition }}-video"
-          path: "out/${{ inputs.composition }}.mp4"
-
-# trigger reload
+    - name: Upload sample frames
+      uses: actions/upload-artifact@v4
+      with:
+        name: sample-frames
+        path: collected_frames/frame_00[01-99][0-9].png
+        retention-days: 14
