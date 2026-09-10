@@ -1090,7 +1090,7 @@ const videoSeries: any[] = [
       secondaryColor: "#FF00FF",
       tertiaryColor: "#FFD700",
       backgroundColor: "#0A0A1A",
-      layerCount: 7,
+      layerCount: 12,
       rotationSpeed: 1,
       glowIntensity: 0.9,
       perspectiveDepth: 2.5,

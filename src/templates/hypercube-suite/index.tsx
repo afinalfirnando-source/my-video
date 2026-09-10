@@ -132,42 +132,11 @@ export const HypercubeSuite: React.FC<HypercubeSuiteProps> = ({
     }));
   }, [width, height]);
 
-  const noiseCanvas = useMemo(() => {
-    if (typeof document === "undefined") return null;
-    const c = document.createElement("canvas");
-    c.width = 480;
-    c.height = 270;
-    return c;
-  }, []);
-
   const ctx = canvasRef.current?.getContext("2d");
 
   if (ctx) {
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
-
-    if (noiseCanvas) {
-      const nc = noiseCanvas.getContext("2d", { willReadFrequently: true });
-      if (nc) {
-        const img = nc.createImageData(480, 270);
-        const d = img.data;
-        const frameSeed = t * 60;
-        for (let i = 0; i < d.length; i += 4) {
-          const px = (i / 4) % 480;
-          const py = Math.floor((i / 4) / 480);
-          const v = seeded(px * 0.1 + py * 0.1 + frameSeed * 0.13) * 255;
-          d[i] = v;
-          d[i + 1] = v;
-          d[i + 2] = v;
-          d[i + 3] = 255;
-        }
-        nc.putImageData(img, 0, 0);
-        ctx.globalAlpha = 0.15;
-        ctx.imageSmoothingEnabled = true;
-        ctx.globalCompositeOperation = "lighter";
-        ctx.drawImage(noiseCanvas, 0, 0, width, height);
-      }
-    }
 
     ctx.globalCompositeOperation = "lighter";
     ctx.lineCap = "round";
@@ -251,7 +220,7 @@ export const HypercubeSuite: React.FC<HypercubeSuiteProps> = ({
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;
-    drawNoiseOverlay(ctx, width, height, t, 0.15);
+    drawNoiseOverlay(ctx, width, height, t, 0.2);
   }
 
   return (
