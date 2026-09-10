@@ -32,15 +32,15 @@ jobs:
       matrix:
         include:
           - composition: "VortexWeave-Professional-4"
-            crf: "11"
+            crf: "14"
           - composition: "GlitchTerrain-Professional-4"
             crf: "9"
           - composition: "NeonCircuit-Professional-4"
-            crf: "10"
+            crf: "16"
           - composition: "ChromaRings-Professional-4"
             crf: "9"
           - composition: "PrismaticRibbons-Professional-4"
-            crf: "10"
+            crf: "6"
 
     steps:
       - uses: actions/checkout@v4
