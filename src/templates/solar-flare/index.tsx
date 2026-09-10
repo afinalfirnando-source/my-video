@@ -68,7 +68,7 @@ export const SolarFlare: React.FC<SolarFlareProps> = ({
         speed: seeded(i * 13 + 6) * 0.3 + 0.7,
         hue: 20 + seeded(i * 13 + 7) * 40,
       })),
-    [width, height, cx, cy, solarRadius, flareCount]
+    [cx, cy, solarRadius, flareCount]
   );
 
   const plasmaStreams = useMemo(

@@ -1,0 +1,112 @@
+name: Render 5 Structured Videos
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "src/templates/vortex-weave/**"
+      - "src/templates/glitch-terrain/**"
+      - "src/templates/neon-circuit/**"
+      - "src/templates/chroma-rings/**"
+      - "src/templates/prismatic-ribbons/**"
+      - "src/templates/ui/noise.ts"
+      - "src/templates/ui/palette.ts"
+      - "src/Root.tsx"
+      - "remotion.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/render-5-structured.yml"
+  workflow_dispatch:
+    inputs:
+      codec:
+        description: "Video codec"
+        required: false
+        default: "h264"
+
+jobs:
+  render:
+    name: Render ${{ matrix.composition }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - composition: "VortexWeave-Professional-4"
+            crf: "14"
+          - composition: "GlitchTerrain-Professional-4"
+            crf: "9"
+          - composition: "NeonCircuit-Professional-4"
+            crf: "16"
+          - composition: "ChromaRings-Professional-4"
+            crf: "9"
+          - composition: "PrismaticRibbons-Professional-4"
+            crf: "6"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Bundle
+        run: npx remotion bundle
+
+      - name: Render ${{ matrix.composition }}
+        run: |
+          npx remotion render \
+            "${{ matrix.composition }}" \
+            "out/${{ matrix.composition }}.mp4" \
+            --codec="${{ inputs.codec || 'h264' }}" \
+            --crf=${{ matrix.crf }} \
+            --preset=fast \
+            --width=3840 \
+            --height=2160 \
+            --fps=60
+
+      - name: Report media info
+        run: |
+          echo "=== Media info for ${{ matrix.composition }} ==="
+          FILE="out/${{ matrix.composition }}.mp4"
+          if [ -f "$FILE" ]; then
+            ls -la "$FILE"
+            ffprobe -v error -show_entries format=duration,size,bit_rate -of default=noprint_wrappers=1 "$FILE"
+          else
+            echo "ERROR: Rendered file not found: $FILE"
+            ls -la out/ 2>/dev/null || true
+            exit 1
+          fi
+
+      - name: Check file size (target 100-250 MB)
+        id: size
+        run: |
+          FILE="out/${{ matrix.composition }}.mp4"
+          FILE_SIZE_BYTES=$(stat -c%s "$FILE")
+          FILE_SIZE_MB=$((FILE_SIZE_BYTES / 1024 / 1024))
+          echo "file_size_mb=${FILE_SIZE_MB}" >> "$GITHUB_OUTPUT"
+          echo "Composition: ${{ matrix.composition }} (crf ${{ matrix.crf }})"
+          echo "File size: ${FILE_SIZE_MB} MB"
+          if [ "$FILE_SIZE_MB" -lt 100 ]; then
+            echo "WARNING: File size ${FILE_SIZE_MB} MB is below 100 MB target (lower --crf for a larger file)."
+          elif [ "$FILE_SIZE_MB" -gt 250 ]; then
+            echo "WARNING: File size ${FILE_SIZE_MB} MB is above 250 MB target (raise --crf for a smaller file)."
+          else
+            echo "OK: File size ${FILE_SIZE_MB} MB is within 100-250 MB range."
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.composition }}-video"
+          path: "out/${{ matrix.composition }}.mp4"
+          retention-days: 30
+          if-no-files-found: warn

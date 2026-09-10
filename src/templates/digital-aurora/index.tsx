@@ -64,7 +64,7 @@ export const DigitalAurora: React.FC<DigitalAuroraProps> = ({
         hueShift: seeded(i * 13 + 6) * 60,
         phase: seeded(i * 13 + 7) * Math.PI * 2,
       })),
-    [width, height, curtainCount]
+    [width, curtainCount]
   );
 
   const stars = useMemo(

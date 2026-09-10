@@ -163,7 +163,7 @@ export const VolumetricCloudscape: React.FC<VolumetricCloudscapeProps> = ({
         const blobPulse = cb.density * (0.8 + Math.sin(t * 0.3 + cb.phase) * 0.2);
 
         ctx.globalAlpha = layerAlpha * blobPulse;
-        ctx.fillStyle = hsl(210, 10, 95);
+        ctx.fillStyle = cloudColor;
 
         ctx.beginPath();
         ctx.arc(px, py, blobSize, 0, Math.PI * 2);

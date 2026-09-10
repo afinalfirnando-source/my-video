@@ -61,7 +61,7 @@ export const OceanicDepths: React.FC<OceanicDepthsProps> = ({
         phase: seeded(i * 13 + 5) * Math.PI * 2,
         wobble: seeded(i * 13 + 6) * 0.5,
       })),
-    [width, height, bubbleCount]
+    [width, bubbleCount]
   );
 
   const particles = useMemo(
@@ -81,7 +81,7 @@ export const OceanicDepths: React.FC<OceanicDepthsProps> = ({
 
   if (ctx) {
     const waterGradient = ctx.createLinearGradient(0, 0, 0, height);
-    waterGradient.addColorStop(0, hsl(210, 70, 25));
+    waterGradient.addColorStop(0, waterColor);
     waterGradient.addColorStop(0.5, hsl(210, 80, 15));
     waterGradient.addColorStop(1, hsl(210, 90, 5));
     ctx.fillStyle = waterGradient;

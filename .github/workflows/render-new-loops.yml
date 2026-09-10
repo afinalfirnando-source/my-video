@@ -1,0 +1,121 @@
+name: Render Background Animations
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "src/**"
+      - "remotion.config.ts"
+  workflow_dispatch:
+    inputs:
+      composition:
+        description: "Composition ID (leave empty to render all)"
+        required: false
+        default: ""
+      codec:
+        description: "Video codec"
+        required: false
+        default: "h264"
+
+jobs:
+  render-all:
+    name: Render All Compositions
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.composition == '') }}
+    strategy:
+        matrix:
+          composition: ["NeuralMesh", "QuantumFoam", "HyperbolicTiling", "VolumetricCloudscape", "CrystalGrowth", "FluidGradientWaves-Professional-1", "NeonGridTunnel-Professional-1", "AuroraBorealis-Professional-1", "PlasmaVortex-Professional-1", "MirrorChrome-Professional-1"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Bundle
+        run: npx remotion bundle
+
+      - name: Render ${{ matrix.composition }}
+        run: |
+          npx remotion render \
+            "${{ matrix.composition }}" \
+            "out/${{ matrix.composition }}.mp4" \
+            --codec="${{ inputs.codec || 'h264' }}" \
+            --crf=10 \
+            --preset=fast \
+            --width=3840 \
+            --height=2160 \
+            --fps=60
+
+      - name: Check file size
+        run: |
+          FILE_SIZE_MB=$(du -m "out/${{ matrix.composition }}.mp4" | cut -f1)
+          echo "File size: ${FILE_SIZE_MB} MB"
+          if [ "$FILE_SIZE_MB" -lt 100 ]; then
+            echo "ERROR: File size ${FILE_SIZE_MB} MB is below 100 MB target"
+            exit 1
+          elif [ "$FILE_SIZE_MB" -gt 250 ]; then
+            echo "ERROR: File size ${FILE_SIZE_MB} MB is above 250 MB target"
+            exit 1
+          else
+            echo "OK: File size ${FILE_SIZE_MB} MB is within 100-250 MB range"
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.composition }}-video"
+          path: "out/${{ matrix.composition }}.mp4"
+
+  render-single:
+    name: Render Single Composition
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.composition != '' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Bundle
+        run: npx remotion bundle
+
+      - name: Render ${{ inputs.composition }}
+        run: |
+          npx remotion render \
+            "${{ inputs.composition }}" \
+            "out/${{ inputs.composition }}.mp4" \
+            --codec="${{ inputs.codec || 'h264' }}" \
+            --crf=18 \
+            --width=3840 \
+            --height=2160 \
+            --fps=60
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ inputs.composition }}-video"
+          path: "out/${{ inputs.composition }}.mp4"
+
+# trigger reload

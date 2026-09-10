@@ -139,7 +139,7 @@ export const CrystalGrowth: React.FC<CrystalGrowthProps> = ({
 
     for (let i = 0; i < crystals.length; i++) {
       const c = crystals[i];
-      const growthT = (time * c.growthSpeed + c.phase / (Math.PI * 2)) % 1;
+      const growthT = (time * c.growthSpeed * growthSpeed + c.phase / (Math.PI * 2)) % 1;
       const pulse = (0.5 + Math.sin(growthT * Math.PI * 2) * 0.5) * 0.8 + 0.2;
 
       const currentSize = c.baseSize * pulse;
