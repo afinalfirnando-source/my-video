@@ -91,6 +91,8 @@ import { ChromaRings } from "./templates/chroma-rings";
 import { ChromaRingsPropsSchema } from "./templates/chroma-rings/types";
 import { PrismaticRibbons } from "./templates/prismatic-ribbons";
 import { PrismaticRibbonsPropsSchema } from "./templates/prismatic-ribbons/types";
+import { HypercubeSuite } from "./templates/hypercube-suite";
+import { HypercubeSuitePropsSchema } from "./templates/hypercube-suite/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1074,6 +1076,27 @@ const videoSeries: any[] = [
     },
     category: "Motion",
     description: "Perspective 3D sine ribbons rotating in layered depth",
+  },
+  {
+    id: "HypercubeSuite-Professional-5",
+    component: HypercubeSuite,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: HypercubeSuitePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      layerCount: 5,
+      rotationSpeed: 1,
+      glowIntensity: 0.85,
+      perspectiveDepth: 2.5,
+    },
+    category: "4D Geometry",
+    description: "Nested rotating tesseracts with simultaneous multi-plane 4D rotation",
   },
 ];
 
