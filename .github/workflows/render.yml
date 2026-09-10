@@ -17,8 +17,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        start-frame: [1, 181, 361, 541, 721]
-        end-frame: [180, 360, 540, 720, 900]
+        include:
+          - start-frame: 1
+            end-frame: 180
+          - start-frame: 181
+            end-frame: 360
+          - start-frame: 361
+            end-frame: 540
+          - start-frame: 541
+            end-frame: 720
+          - start-frame: 721
+            end-frame: 900
     
     steps:
     - uses: actions/checkout@v4
@@ -26,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget xz-utils ffmpeg xvfb libgl1-mesa-glx libglu1-mesa mesa-utils
+        sudo apt-get install -y wget xz-utils ffmpeg xvfb libgl1-mesa-glx libglu1-mesa
 
     - name: Download Blender
       run: |
