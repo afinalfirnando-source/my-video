@@ -175,7 +175,7 @@ export const HypercubeSuite: React.FC<HypercubeSuiteProps> = ({
 
     ctx.globalAlpha = 1;
     ctx.shadowBlur = 0;
-    drawNoiseOverlay(ctx, width, height, t, 0.05);
+    drawNoiseOverlay(ctx, width, height, t, 0.2);
   }
 
   return (

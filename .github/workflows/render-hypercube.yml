@@ -37,7 +37,7 @@ jobs:
             "HypercubeSuite-Professional-5" \
             "out/HypercubeSuite-Professional-5.mp4" \
             --codec="${{ inputs.codec || 'h264' }}" \
-            --crf=3 \
+            --crf=0 \
             --preset=fast \
             --width=3840 \
             --height=2160 \
@@ -63,7 +63,7 @@ jobs:
           FILE_SIZE_BYTES=$(stat -c%s "$FILE")
           FILE_SIZE_MB=$((FILE_SIZE_BYTES / 1024 / 1024))
           echo "file_size_mb=${FILE_SIZE_MB}" >> "$GITHUB_OUTPUT"
-          echo "Composition: HypercubeSuite-Professional-5 (crf 3)"
+          echo "Composition: HypercubeSuite-Professional-5 (crf 0)"
           echo "File size: ${FILE_SIZE_MB} MB"
           if [ "$FILE_SIZE_MB" -lt 100 ]; then
             echo "WARNING: File size ${FILE_SIZE_MB} MB is below 100 MB target (lower --crf for a larger file)."
