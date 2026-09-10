@@ -4,11 +4,11 @@ on:
   push:
     branches: [main, master]
     paths:
-      - "src/templates/vector-field-flow/**"
-      - "src/templates/kaleido-grid/**"
-      - "src/templates/matrix-cascade/**"
-      - "src/templates/prism-vault/**"
-      - "src/templates/lattice-tunnel/**"
+      - "src/templates/vortex-weave/**"
+      - "src/templates/glitch-terrain/**"
+      - "src/templates/neon-circuit/**"
+      - "src/templates/chroma-rings/**"
+      - "src/templates/prismatic-ribbons/**"
       - "src/templates/ui/noise.ts"
       - "src/templates/ui/palette.ts"
       - "src/Root.tsx"
@@ -31,16 +31,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - composition: "VectorFieldFlow-Professional-3"
-            crf: "12"
-          - composition: "MatrixCascade-Professional-3"
-            crf: "10"
-          - composition: "KaleidoGrid-Professional-3"
+          - composition: "VortexWeave-Professional-4"
             crf: "11"
-          - composition: "PrismVault-Professional-3"
-            crf: "11"
-          - composition: "LatticeTunnel-Professional-3"
+          - composition: "GlitchTerrain-Professional-4"
             crf: "9"
+          - composition: "NeonCircuit-Professional-4"
+            crf: "10"
+          - composition: "ChromaRings-Professional-4"
+            crf: "9"
+          - composition: "PrismaticRibbons-Professional-4"
+            crf: "10"
 
     steps:
       - uses: actions/checkout@v4

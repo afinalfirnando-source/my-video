@@ -81,6 +81,16 @@ import { PrismVault } from "./templates/prism-vault";
 import { PrismVaultPropsSchema } from "./templates/prism-vault/types";
 import { LatticeTunnel } from "./templates/lattice-tunnel";
 import { LatticeTunnelPropsSchema } from "./templates/lattice-tunnel/types";
+import { VortexWeave } from "./templates/vortex-weave";
+import { VortexWeavePropsSchema } from "./templates/vortex-weave/types";
+import { GlitchTerrain } from "./templates/glitch-terrain";
+import { GlitchTerrainPropsSchema } from "./templates/glitch-terrain/types";
+import { NeonCircuit } from "./templates/neon-circuit";
+import { NeonCircuitPropsSchema } from "./templates/neon-circuit/types";
+import { ChromaRings } from "./templates/chroma-rings";
+import { ChromaRingsPropsSchema } from "./templates/chroma-rings/types";
+import { PrismaticRibbons } from "./templates/prismatic-ribbons";
+import { PrismaticRibbonsPropsSchema } from "./templates/prismatic-ribbons/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -948,6 +958,122 @@ const videoSeries: any[] = [
     },
     category: "Motion",
     description: "Perspective 3D lattice grid scrolling forward with depth-tinted hue",
+  },
+  // Episode 21: Vortex weave
+  {
+    id: "VortexWeave-Professional-4",
+    component: VortexWeave,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: VortexWeavePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      armCount: 11,
+      turns: 4,
+      pointCount: 120,
+      rotationSpeed: 2,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Motion",
+    description: "Layered logarithmic spirals rotating in harmonic integer phase",
+  },
+  // Episode 22: Glitch terrain
+  {
+    id: "GlitchTerrain-Professional-4",
+    component: GlitchTerrain,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: GlitchTerrainPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      bandCount: 48,
+      glitchAmp: 96,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Data",
+    description: "Sinusoidally shifting color bands forming a seamless glitch water surface",
+  },
+  // Episode 23: Neon circuit
+  {
+    id: "NeonCircuit-Professional-4",
+    component: NeonCircuit,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: NeonCircuitPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#050014",
+      cols: 22,
+      rows: 16,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+      pulseSpeed: 1,
+    },
+    category: "Geometry",
+    description: "Node grid with a traveling pulse light along a serpentine circuit path",
+  },
+  // Episode 24: Chroma rings
+  {
+    id: "ChromaRings-Professional-4",
+    component: ChromaRings,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: ChromaRingsPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      ringCount: 22,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+      breathAmp: 0.12,
+    },
+    category: "Geometry",
+    description: "Concentric rings breathing and sweeping hue in layered bands",
+  },
+  // Episode 25: Prismatic ribbons
+  {
+    id: "PrismaticRibbons-Professional-4",
+    component: PrismaticRibbons,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: PrismaticRibbonsPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      ribbonCount: 6,
+      points: 72,
+      rotationSpeed: 2,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+      fov: 520,
+      depthSpan: 720,
+    },
+    category: "Motion",
+    description: "Perspective 3D sine ribbons rotating in layered depth",
   },
 ];
 
