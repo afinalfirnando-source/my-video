@@ -35,8 +35,8 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget xz-utils ffmpeg xvfb libgl1 libglu1-mesa 2>&1 || \
-          sudo apt-get install -y wget xz-utils ffmpeg xvfb libgl1-mesa-glx libglu1-mesa 2>&1
+        sudo apt-get install -y wget xz-utils ffmpeg xvfb
+        sudo apt-get install -y libgl1 libglu1-mesa libglib2.0-0 2>&1 || true
 
     - name: Download Blender
       run: |
