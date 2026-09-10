@@ -71,6 +71,16 @@ import { PixelGlide } from "./templates/pixel-glide";
 import { PixelGlidePropsSchema } from "./templates/pixel-glide/types";
 import { LuminousVeil } from "./templates/luminous-veil";
 import { LuminousVeilPropsSchema } from "./templates/luminous-veil/types";
+import { VectorFieldFlow } from "./templates/vector-field-flow";
+import { VectorFieldFlowPropsSchema } from "./templates/vector-field-flow/types";
+import { KaleidoGrid } from "./templates/kaleido-grid";
+import { KaleidoGridPropsSchema } from "./templates/kaleido-grid/types";
+import { MatrixCascade } from "./templates/matrix-cascade";
+import { MatrixCascadePropsSchema } from "./templates/matrix-cascade/types";
+import { PrismVault } from "./templates/prism-vault";
+import { PrismVaultPropsSchema } from "./templates/prism-vault/types";
+import { LatticeTunnel } from "./templates/lattice-tunnel";
+import { LatticeTunnelPropsSchema } from "./templates/lattice-tunnel/types";
 
 // Professional video series with diverse themes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -821,6 +831,123 @@ const videoSeries: any[] = [
     },
     category: "Flow",
     description: "Stack of sine wave curtains sweeping with shifting color bands",
+  },
+  // Episode 16: Vector field flow
+  {
+    id: "VectorFieldFlow-Professional-3",
+    component: VectorFieldFlow,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: VectorFieldFlowPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      cols: 72,
+      rows: 32,
+      fieldFreq: 1,
+      hueCycles: 1,
+      glowIntensity: 0.7,
+    },
+    category: "Vector Field",
+    description: "2D curl advection field of oriented segments streaming with hue drift",
+  },
+  // Episode 17: Kaleidoscopic grid
+  {
+    id: "KaleidoGrid-Professional-3",
+    component: KaleidoGrid,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: KaleidoGridPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      symmetry: 12,
+      ringCount: 14,
+      rotationSpeed: 2,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Geometry",
+    description: "Rotating mirrored sector replicated by symmetry into a living mandala",
+  },
+  // Episode 18: Matrix cascade
+  {
+    id: "MatrixCascade-Professional-3",
+    component: MatrixCascade,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: MatrixCascadePropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#050014",
+      cols: 56,
+      rows: 64,
+      trail: 0.45,
+      baseSpeed: 2,
+      hueCycles: 1,
+      glowIntensity: 0.85,
+    },
+    category: "Data",
+    description: "Phase-shifted columns streaming downward in a periodic cascade river",
+  },
+  // Episode 19: Prism vault
+  {
+    id: "PrismVault-Professional-3",
+    component: PrismVault,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: PrismVaultPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      ringCount: 16,
+      baseSides: 3,
+      rotationSpeed: 2,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+      breathAmp: 0.15,
+    },
+    category: "Geometry",
+    description: "Nested integer-sided polygons breathing and rotating in harmonic layers",
+  },
+  // Episode 20: Lattice tunnel
+  {
+    id: "LatticeTunnel-Professional-3",
+    component: LatticeTunnel,
+    durationInFrames: 900,
+    fps: 60,
+    width: 3840,
+    height: 2160,
+    schema: LatticeTunnelPropsSchema,
+    defaultProps: {
+      primaryColor: "#00F0FF",
+      secondaryColor: "#FF00FF",
+      tertiaryColor: "#FFD700",
+      backgroundColor: "#0A0A1A",
+      gridSize: 18,
+      depth: 22,
+      scrollSpeed: 1,
+      hueCycles: 1,
+      glowIntensity: 0.8,
+    },
+    category: "Motion",
+    description: "Perspective 3D lattice grid scrolling forward with depth-tinted hue",
   },
 ];
 
