@@ -4,7 +4,6 @@ import type { AuroraBorealisProps } from "./types";
 import {
   useCanvas,
   applyVignette,
-  getLoopTime,
   getSeamlessAngle,
   getSeamlessSine,
   intCycles,
@@ -43,10 +42,13 @@ export const AuroraBorealis: React.FC<AuroraBorealisProps> = ({
     
     return (ctx: CanvasRenderingContext2D, frame: number, width: number, height: number) => {
       const { durationInFrames } = TEMPLATE_CONFIG;
-      const loopTime = getLoopTime(frame, durationInFrames);
-      // FIX: Get seamless angle with integer cycles
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = "transparent";
+      ctx.globalCompositeOperation = "source-over";
+      // Get seamless angle with integer cycles
       const timeAngle = getSeamlessAngle(frame, durationInFrames, waveCycles);
-      // FIX: Star twinkle uses integer cycles only
+      // Star twinkle uses integer cycles only
       const starTwinkleCycles = intCycles(3);
 
       // Clear with gradient sky
