@@ -1,9 +1,11 @@
-import { CalculateMetadataFunction, Composition } from "remotion";
+// Base composition (kept for compatibility)
+import { Composition } from "remotion";
+import React from "react";
 
 type Props = {};
 
-const calculateMetadata: CalculateMetadataFunction<Props> = () => {
-  return {};
+export const MyComponent: React.FC<Props> = () => {
+  return null;
 };
 
 export const MyComposition = () => {
@@ -15,11 +17,6 @@ export const MyComposition = () => {
       fps={30}
       width={1280}
       height={720}
-      calculateMetadata={calculateMetadata}
     />
   );
-};
-
-export const MyComponent: React.FC<Props> = () => {
-  return null;
 };

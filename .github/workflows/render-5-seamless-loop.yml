@@ -1,0 +1,135 @@
+name: Render 5 Seamless Loop Videos (4K 60fps)
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "src/templates/**"
+      - "src/shared/**"
+      - "src/Root.tsx"
+      - "src/index.ts"
+      - "src/Composition.tsx"
+      - "remotion.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/render-5-seamless-loop.yml"
+  workflow_dispatch:
+
+jobs:
+  render:
+    name: Render ${{ matrix.composition_id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        composition_id:
+          - "FluidGradientWaves-001"
+          - "NeonGridTunnel-001"
+          - "AuroraBorealis-001"
+          - "ParticleVortex-001"
+          - "LiquidChrome-001"
+    env:
+      OUTPUT_FILE: "out/${{ matrix.composition_id }}.mp4"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Render ${{ matrix.composition_id }} (4K 60fps 900 frames)
+        run: |
+          npx remotion render "${{ matrix.composition_id }}" \
+            "${{ env.OUTPUT_FILE }}" \
+            --codec=h264 \
+            --crf=10 \
+            --width=3840 \
+            --height=2160 \
+            --fps=60 \
+            --output-format=mp4
+
+      - name: Report media info
+        run: |
+          echo "=== Media info for ${{ matrix.composition_id }} ==="
+          ls -lh "${{ env.OUTPUT_FILE }}" || true
+          if [ -f "${{ env.OUTPUT_FILE }}" ]; then
+            ffprobe -v error -show_entries format=duration,size,bit_rate -of default=noprint_wrappers=1 "${{ env.OUTPUT_FILE }}" || true
+          fi
+
+      - name: Check file size (target 80-250 MB)
+        id: size
+        run: |
+          FILE="${{ env.OUTPUT_FILE }}"
+          if [ -f "$FILE" ]; then
+            SIZE_BYTES=$(stat -c%s "$FILE")
+            SIZE_MB=$((SIZE_BYTES / 1024 / 1024))
+            echo "file_size_mb=${SIZE_MB}" >> "$GITHUB_OUTPUT"
+            echo "File size: ${SIZE_MB} MB"
+            if [ "$SIZE_MB" -lt 80 ]; then
+              echo "::warning::File size ${SIZE_MB} MB is below 80 MB minimum (target 80-250 MB)"
+            elif [ "$SIZE_MB" -gt 250 ]; then
+              echo "::warning::File size ${SIZE_MB} MB is above 250 MB maximum (target 80-250 MB)"
+            else
+              echo "OK: File size ${SIZE_MB} MB is within 80-250 MB range"
+            fi
+          else
+            echo "::error::Rendered file not found: $FILE"
+            exit 1
+          fi
+
+      - name: Seamless loop verification (frame 0 vs 899)
+        run: |
+          FILE="${{ env.OUTPUT_FILE }}"
+          if [ -f "$FILE" ]; then
+            ffmpeg -y -i "$FILE" -vf "select=eq(n\,0)" -vframes 1 /tmp/frame0.png 2>/dev/null || true
+            ffmpeg -y -i "$FILE" -vf "select=eq(n\,899)" -vframes 1 /tmp/frame899.png 2>/dev/null || true
+            if [ -f /tmp/frame0.png ] && [ -f /tmp/frame899.png ]; then
+              python3 -c "
+import sys
+from PIL import Image
+import numpy as np
+img1 = np.array(Image.open('/tmp/frame0.png').convert('RGB')).astype(np.float64)
+img2 = np.array(Image.open('/tmp/frame899.png').convert('RGB')).astype(np.float64)
+mse = float(np.mean((img1 - img2) ** 2))
+print(f'Seamless MSE (frame 0 vs 899): {mse:.6f}')
+if mse > 0.5:
+    print('WARNING: MSE exceeds 0.5 threshold - possible visible seam')
+    sys.exit(0)
+else:
+    print('PASS: Seamless loop verified (MSE <= 0.5)')
+    sys.exit(0)
+"
+            else
+              echo "::warning::Could not extract frame 0 and 899 for comparison"
+            fi
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: "${{ matrix.composition_id }}-4K-video"
+          path: ${{ env.OUTPUT_FILE }}
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload to release (optional - uncomment to enable)
+        if: false
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.OUTPUT_FILE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

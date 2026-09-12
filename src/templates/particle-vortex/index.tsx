@@ -1,148 +1,279 @@
-import {
-  AbsoluteFill,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
-import React, { useMemo, useRef } from "react";
+import { AbsoluteFill } from "remotion";
+import React, { useMemo } from "react";
 import type { ParticleVortexProps } from "./types";
-
-const TOTAL_FRAMES = 900;
+import {
+  useCanvas,
+  applyVignette,
+  getSeamlessAngle,
+  getSeamlessSine,
+  intCycles,
+  seeded,
+  TEMPLATE_CONFIG,
+} from "../../shared";
 
 type Particle = {
   angle: number;
   radius: number;
   speed: number;
   size: number;
-  hue: number;
-  drift: number;
-  phase: number;
+  hueOffset: number;
+  armPhase: number;
 };
 
-const seeded = (seed: number): number => {
-  const x = Math.sin(seed * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-};
-
-const hsl = (h: number, s: number, l: number): string => {
-  return `hsl(${h}, ${s}%, ${l}%)`;
-};
-
+/**
+ * ParticleVortex - Particles spiraling into glowing core with light trails
+ * Seamless loop: All animations use periodic functions based on loopTime
+ * Frame 0 = Frame 900 (identical, no flickering)
+ */
 export const ParticleVortex: React.FC<ParticleVortexProps> = ({
-  primaryColor = "#FF8C00",
-  secondaryColor = "#FF0080",
-  particleCount = 1500,
-  vortexSpeed = 0.6,
-  spiralStrength = 0.8,
-  coreGlow = 0.9,
+  primaryColor,
+  secondaryColor,
+  tertiaryColor,
+  backgroundColor,
+  particleCount,
+  vortexSpeed,
+  spiralStrength,
+  coreGlow,
+  trailLength,
+  glowIntensity,
 }) => {
-  const frame = useCurrentFrame();
-  const { width, height } = useVideoConfig();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particles = useMemo<Particle[]>(() => {
+    return Array.from({ length: particleCount }, (_, i) => ({
+      angle: seeded(i * 13 + 1) * Math.PI * 2,
+      radius: seeded(i * 13 + 2) * 400 + 50,
+      speed: seeded(i * 13 + 3) * 0.8 + 0.2,
+      size: seeded(i * 13 + 4) * 5 + 2,
+      hueOffset: seeded(i * 13 + 5) * 60,
+      armPhase: seeded(i * 13 + 6) * Math.PI * 2,
+    }));
+  }, [particleCount]);
 
-  const time = (frame % TOTAL_FRAMES) / TOTAL_FRAMES;
-  const t = time * Math.PI * 2;
+  const draw = useMemo(() => {
+    return (ctx: CanvasRenderingContext2D, frame: number, width: number, height: number) => {
+      const { durationInFrames: D } = TEMPLATE_CONFIG;
+      const loopT = getLoopTime(frame, D);
+      const baseCycles = intCycles(vortexSpeed);
+      const armCycles = intCycles(vortexSpeed * 2);
+      const coreCycles = intCycles(vortexSpeed * 3);
 
-  const particles = useMemo(
-    () =>
-      Array.from({ length: particleCount }, (_, i): Particle => ({
-        angle: seeded(i * 31 + 1) * Math.PI * 2,
-        radius: seeded(i * 31 + 2) * Math.min(width, height) * 0.45 + 20,
-        speed: seeded(i * 31 + 3) * 0.6 + 0.4,
-        size: seeded(i * 31 + 4) * 3 + 0.5,
-        hue: seeded(i * 31 + 5) * 60 + 10,
-        drift: seeded(i * 31 + 6) * 0.3 + 0.1,
-        phase: seeded(i * 31 + 7) * Math.PI * 2,
-      })),
-    [width, height, particleCount]
-  );
+      const timeAngle = getSeamlessAngle(frame, D, baseCycles);
+      const coreTimeAngle = getSeamlessAngle(frame, D, coreCycles);
+      const armTimeAngle = getSeamlessAngle(frame, D, armCycles);
 
-  const ctx = canvasRef.current?.getContext("2d");
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(0, 0, width, height);
 
-  if (ctx) {
-    ctx.fillStyle = "#050005";
-    ctx.fillRect(0, 0, width, height);
+      const cx = width / 2;
+      const cy = height / 2;
 
-    const cx = width / 2;
-    const cy = height / 2;
+      ctx.save();
+      ctx.translate(cx, cy);
 
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      const angleT = t * p.speed * vortexSpeed + p.phase;
-      const r = p.radius + Math.sin(angleT * 1.3 + p.phase) * 35 * spiralStrength;
-      const px = cx + Math.cos(angleT) * r;
-      const py = cy + Math.sin(angleT) * r;
+      // Draw outer glow ring
+      const outerGlow = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(width, height) * 0.6);
+      outerGlow.addColorStop(0, "rgba(255, 140, 0, 0.1)");
+      outerGlow.addColorStop(0.5, "rgba(255, 0, 128, 0.05)");
+      outerGlow.addColorStop(1, "transparent");
+      ctx.fillStyle = outerGlow;
+      ctx.fillRect(-cx, -cy, width, height);
 
-      const hue = (p.hue + time * 45) % 360;
-      const pulse = 0.5 + Math.sin(t * 1.2 + p.phase) * 0.5;
+      // Draw particles with trails
+      for (const particle of particles) {
+        // Seamless base rotation (same cycles for all, static offset per particle)
+        const baseAngle = particle.angle + timeAngle + particle.armPhase;
+        // Spiral angle: static per-particle offset, same timeAngle — seamless
+        const spiralAngle = baseAngle + (1 - particle.radius / 450) * spiralStrength * Math.PI * 4;
+        // Radial pulse: uses coreCycles (integer), static per-particle offset
+        const radialPulse = getSeamlessSine(frame, D, coreCycles) * 40 +
+                            Math.sin(particle.armPhase * 0.3) * 20;
+        const currentRadius = particle.radius + radialPulse;
 
-      ctx.globalAlpha = pulse * 0.75;
-      ctx.fillStyle = hsl(hue, 100, 60);
+        const px = Math.cos(spiralAngle) * currentRadius;
+        const py = Math.sin(spiralAngle) * currentRadius;
+
+        // Draw trail
+        const trailSteps = Math.floor(8 * trailLength);
+        for (let t = trailSteps; t >= 0; t--) {
+          const tNorm = t / trailSteps;
+          // Trail angle: use same timeAngle with slight backward offset per trail segment
+          const trailAngle = spiralAngle - tNorm * 0.3 * baseCycles * Math.PI * 2 * particle.speed;
+          const trailRadius = currentRadius + tNorm * 40;
+          const tx = Math.cos(trailAngle + spiralAngle * 0) * trailRadius;
+          const ty = Math.sin(trailAngle + spiralAngle * 0) * trailRadius;
+          const alpha = (1 - tNorm) * 0.4;
+          const hue = (particle.hueOffset +
+                       getSeamlessSine(frame, D, coreCycles) * 180) % 360;
+
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = `hsl(${hue}, 100%, 60%)`;
+          ctx.shadowBlur = 10 * glowIntensity;
+          ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
+
+          ctx.beginPath();
+          ctx.arc(tx, ty, particle.size * (1 - tNorm * 0.5), 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Main particle (same hue as trail)
+        const particleHue = (particle.hueOffset +
+                            getSeamlessSine(frame, D, coreCycles) * 180) % 360;
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = `hsl(${particleHue}, 100%, 70%)`;
+        ctx.shadowBlur = 20 * glowIntensity;
+        ctx.shadowColor = `hsl(${particleHue}, 100%, 50%)`;
+
+        ctx.beginPath();
+        ctx.arc(px, py, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Draw core with pulsing glow
+      const corePulse = 0.8 + getSeamlessSine(frame, D, coreCycles) * 0.2;
+      const coreSize = 200 * corePulse;
+
+      const coreGlowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, coreSize * 4);
+      coreGlowGradient.addColorStop(0, tertiaryColor);
+      coreGlowGradient.addColorStop(0.3, primaryColor);
+      coreGlowGradient.addColorStop(0.6, secondaryColor);
+      coreGlowGradient.addColorStop(1, "transparent");
+
+      ctx.globalAlpha = coreGlow;
+      ctx.fillStyle = coreGlowGradient;
+      ctx.shadowBlur = 60 * coreGlow;
+      ctx.shadowColor = tertiaryColor;
       ctx.beginPath();
-      ctx.arc(px, py, p.size * pulse, 0, Math.PI * 2);
+      ctx.arc(0, 0, coreSize * 4, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.globalAlpha = pulse * 0.25;
-      ctx.fillStyle = hsl((hue + 35) % 360, 100, 50);
+      // Inner bright core
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = "#FFFFFF";
       ctx.beginPath();
-      ctx.arc(px, py, p.size * 3 * pulse, 0, Math.PI * 2);
+      ctx.arc(0, 0, coreSize * 0.5, 0, Math.PI * 2);
       ctx.fill();
-    }
 
-    ctx.globalAlpha = 0.35;
-    ctx.shadowBlur = 25;
-    ctx.shadowColor = secondaryColor;
-    ctx.strokeStyle = secondaryColor;
-    ctx.lineWidth = 1;
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      const angleT = t * p.speed * vortexSpeed + p.phase;
-      const r = p.radius + Math.sin(angleT * 1.3 + p.phase) * 35 * spiralStrength;
-      const px = cx + Math.cos(angleT) * r;
-      const py = cy + Math.sin(angleT) * r;
-      const angleNext = angleT + 0.18;
-      const rNext = p.radius + Math.sin(angleNext * 1.3 + p.phase) * 35 * spiralStrength;
-      const nx = cx + Math.cos(angleNext) * rNext;
-      const ny = cy + Math.sin(angleNext) * rNext;
+      // Draw rotating spiral arms
+      ctx.globalAlpha = 0.3;
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = primaryColor;
 
-      ctx.globalAlpha = 0.08 + seeded(i * 17) * 0.12;
+      for (let arm = 0; arm < 4; arm++) {
+        const armOffset = (arm / 4) * Math.PI * 2;
+        ctx.beginPath();
+        for (let r = 0; r < 400; r += 5) {
+          const angle = armOffset + (r / 400) * Math.PI * 4 + armTimeAngle;
+          const x = Math.cos(angle) * r;
+          const y = Math.sin(angle) * r;
+          if (r === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      applyVignette(ctx, width, height, 0.4);
+    };
+  }, [primaryColor, secondaryColor, tertiaryColor, backgroundColor, vortexSpeed, spiralStrength, coreGlow, trailLength, glowIntensity, particles]);alAngle - trailT * 0.3 * intCycles(vortexSpeed);piralAngle - trailT * 0.3 * Math.PI * 2 * intCycles(vortexSpeed);
+          const trailRadius = currentRadius + trailT * 30;
+          const tx = Math.cos(trailAngle) * trailRadius;
+          const ty = Math.sin(trailAngle) * trailRadius;
+
+          const trailAlpha = (1 - trailT) * 0.4;
+          // Seamless hue: +i*60 static, sin(pulseCycles) with offset = 0 at seam
+          const hue = (particle.hueOffset +
+                       Math.sin(getSeamlessAngle(frame, durationInFrames, pulseCycles) + particle.phaseOffset) * 180 +
+                       i * 0) % 360;
+          // Note: + i*0 since we already have hueOffset; using Math.sin(offset) gives per-particle variation
+
+          ctx.globalAlpha = trailAlpha;
+          ctx.fillStyle = `hsl(${hue}, 100%, 60%)`;
+          ctx.shadowBlur = 10 * glowIntensity;
+          ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
+
+          ctx.beginPath();
+          ctx.arc(tx, ty, particle.size * (1 - trailT * 0.5), 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Main particle hue (same formula as trail — no need for duplicate)
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = `hsl(${hue}, 100%, 70%)`;
+        ctx.shadowBlur = 20 * glowIntensity;
+        ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
+
+        ctx.beginPath();
+        ctx.arc(px, py, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Draw core with pulsing glow
+      // FIX: intCycles(vortexSpeed + 2) → integer, seamless
+      const corePulseCycles = intCycles(vortexSpeed + 2);
+      const corePulse = 0.8 + getSeamlessSine(frame, durationInFrames, corePulseCycles) * 0.2;
+      const coreSize = 200 * corePulse;  // was 40, now 200 (visible at 4K)
+
+      const coreGlowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, coreSize * 4);
+      coreGlowGradient.addColorStop(0, tertiaryColor);
+      coreGlowGradient.addColorStop(0.3, primaryColor);
+      coreGlowGradient.addColorStop(0.6, secondaryColor);
+      coreGlowGradient.addColorStop(1, "transparent");
+
+      ctx.globalAlpha = coreGlow;
+      ctx.fillStyle = coreGlowGradient;
+      ctx.shadowBlur = 60 * coreGlow;
+      ctx.shadowColor = tertiaryColor;
       ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(nx, ny);
-      ctx.stroke();
-    }
+      ctx.arc(0, 0, coreSize * 4, 0, Math.PI * 2);
+      ctx.fill();
 
-    ctx.globalAlpha = 0.6;
-    ctx.shadowBlur = 90 * coreGlow;
-    ctx.shadowColor = primaryColor;
-    const pulseSize = Math.min(width, height) * 0.12 + Math.sin(t * 1.8) * 25;
-    const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, pulseSize);
-    coreGrad.addColorStop(0, hsl(30, 100, 70));
-    coreGrad.addColorStop(0.5, hsl(340, 100, 50));
-    coreGrad.addColorStop(1, "transparent");
-    ctx.fillStyle = coreGrad;
-    ctx.beginPath();
-    ctx.arc(cx, cy, pulseSize, 0, Math.PI * 2);
-    ctx.fill();
+      // Inner bright core
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = "#FFFFFF";
+      ctx.beginPath();
+      ctx.arc(0, 0, coreSize * 0.5, 0, Math.PI * 2);
+      ctx.fill();
 
-    ctx.globalAlpha = 0.4;
-    ctx.shadowBlur = 70 * coreGlow;
-    ctx.shadowColor = secondaryColor;
-    const midGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(width, height) * 0.35);
-    midGrad.addColorStop(0, hsl((time * 80 + 20) % 360, 90, 45));
-    midGrad.addColorStop(1, "transparent");
-    ctx.fillStyle = midGrad;
-    ctx.fillRect(0, 0, width, height);
+      // Draw rotating spiral arms
+      ctx.globalAlpha = 0.3;
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = primaryColor;
 
-    ctx.globalAlpha = 1;
-    ctx.shadowBlur = 0;
-  }
+      for (let arm = 0; arm < 4; arm++) {
+        const armOffset = (arm / 4) * Math.PI * 2;
+        ctx.beginPath();
+        for (let r = 0; r < 400; r += 5) {
+          const angle = armOffset + (r / 400) * Math.PI * 4 + armTimeAngle;
+          const x = Math.cos(angle) * r;
+          const y = Math.sin(angle) * r;
+          if (r === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      applyVignette(ctx, width, height, 0.4);
+    };
+    }, [primaryColor, secondaryColor, tertiaryColor, backgroundColor, vortexSpeed, spiralStrength, coreGlow, trailLength, glowIntensity, particles]);
+
+  const canvasRef = useCanvas(draw);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: "#000000" }}>
+    <AbsoluteFill style={{ backgroundColor }}>
       <canvas
         ref={canvasRef}
-        width={width}
-        height={height}
+        width={TEMPLATE_CONFIG.width}
+        height={TEMPLATE_CONFIG.height}
         style={{ width: "100%", height: "100%" }}
       />
     </AbsoluteFill>

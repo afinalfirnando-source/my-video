@@ -1,54 +1,107 @@
-# Remotion video
+# My Video - Professional Seamless Loop Templates
 
-<p align="center">
-  <a href="https://github.com/remotion-dev/logo">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng">
-      <img alt="Animated Remotion Logo" src="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif">
-    </picture>
-  </a>
-</p>
+A collection of 5 professional seamless loop video templates built with Remotion, designed for 4K stock footage, backgrounds, and motion graphics.
 
-Welcome to your Remotion project!
+## 🎬 Templates
 
-## Commands
+| # | Template | Category | Description |
+|---|----------|----------|-------------|
+| 1 | Fluid Gradient Waves | Abstract | Smooth organic color gradients flowing like liquid silk |
+| 2 | Neon Grid Tunnel | Tech | Endless perspective grid flying toward viewer with neon scan lines |
+| 3 | Aurora Borealis | Nature | Curtains of northern lights dancing across starry night sky |
+| 4 | Particle Vortex | Energy | Thousands of particles spiraling into a glowing core with light trails |
+| 5 | Liquid Chrome | Premium | Flowing metallic liquid surface with neon reflections and ripples |
 
-**Install Dependencies**
+## 🚀 Quick Start
 
-```console
-npm i
+### Install Dependencies
+```bash
+npm install
 ```
 
-**Start Preview**
-
-```console
+### Start Development Studio
+```bash
 npm run dev
 ```
 
-**Render video**
-
-```console
-npx remotion render
+### Render All Templates (4K 60fps 15s)
+```bash
+npm run render:all
 ```
 
-**Upgrade Remotion**
-
-```console
-npx remotion upgrade
+### Render Single Template
+```bash
+npm run render:single "Fluid Gradient Waves"
 ```
 
-## Docs
+### List Available Compositions
+```bash
+npm run list
+```
 
-Get started with Remotion by reading the [fundamentals page](https://www.remotion.dev/docs/the-fundamentals).
+## 📁 Project Structure
 
-## Help
+```
+src/
+├── index.ts                    # Entry point
+├── Root.tsx                    # Composition registry
+├── Composition.tsx             # Base composition (compatibility)
+├── index.css                   # Tailwind imports
+├── shared/
+│   ├── index.ts                # Shared exports
+│   ├── utils.ts                # Utility functions (seeded, hsl, lerp, clamp, etc.)
+│   └── useCanvas.ts            # Custom canvas hook
+├── templates/
+│   ├── index.ts                # Template exports
+│   ├── fluid-gradient-waves/   # Template 1
+│   ├── neon-grid-tunnel/       # Template 2
+│   ├── aurora-borealis/        # Template 3
+│   ├── particle-vortex/        # Template 4
+│   └── liquid-chrome/          # Template 5
+└── data/
+    └── template-registry.ts    # Centralized template configuration
 
-We provide help on our [Discord server](https://discord.gg/6VzzNDwUwV).
+scripts/
+├── render-all.ts               # Batch render all templates
+├── render-single.ts            # Render single template
+└── generate-list.ts            # List compositions
+```
 
-## Issues
+## ⚙️ Configuration
 
-Found an issue with Remotion? [File an issue here](https://github.com/remotion-dev/remotion/issues/new).
+All templates use consistent settings:
+- **Resolution**: 4K (3840×2160)
+- **FPS**: 60
+- **Duration**: 900 frames (15 seconds)
+- **Codec**: H.264
+- **Bitrate**: 100 Mbps
 
-## License
+## 🎨 Customization
 
-Note that for some entities a company license is needed. [Read the terms here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).
+Each template accepts customizable props:
+- Colors (primary, secondary, tertiary, background)
+- Animation speed and intensity
+- Particle/element counts
+- Glow and effect intensities
+
+See individual `types.ts` files for full prop schemas.
+
+## 📝 Adding New Templates
+
+1. Create folder in `src/templates/`
+2. Add `types.ts` with Zod schema
+3. Add `index.tsx` with React component
+4. Export from `src/templates/index.ts`
+5. Register in `src/data/template-registry.ts`
+
+## 🛠️ Tech Stack
+
+- **Remotion** - Video rendering framework
+- **React 19** - UI components
+- **TypeScript** - Type safety
+- **Zod** - Schema validation
+- **Tailwind CSS** - Styling (if needed)
+
+## 📄 License
+
+Private project. See Remotion license for framework terms.

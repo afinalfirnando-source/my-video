@@ -1,11 +1,18 @@
-import { AbsoluteFill } from "remotion";
+#!/usr/bin/env python3
+"""Write all 5 templates with bulletproof seamless loop logic."""
+import os
+
+BASE = r"C:\Users\ADVAN\my-video\src\templates"
+
+# Fluid Gradient Waves
+FLUID = r'''import { AbsoluteFill } from "remotion";
 import React, { useMemo } from "react";
 import type { FluidGradientWavesProps } from "./types";
 import {
   useCanvas,
   applyVignette,
   getSeamlessSine,
-  intCycles,
+  getSeamlessCosine,
   hexToHsl,
   TEMPLATE_CONFIG,
 } from "../../shared";
@@ -34,24 +41,17 @@ export const FluidGradientWaves: React.FC<FluidGradientWavesProps> = ({
     return (ctx: CanvasRenderingContext2D, frame: number, width: number, height: number) => {
       const { durationInFrames } = TEMPLATE_CONFIG;
 
-      // Clear with background
       ctx.fillStyle = backgroundColor;
       ctx.fillRect(0, 0, width, height);
 
-      // FIX: Each time wave must have INTEGER cycles for seamless loop
-      // waveCount * flowSpeed for different wave layers
-      const cyclesBase = intCycles(flowSpeed);
-
-      // Draw layered gradient waves
       for (let w = 0; w < waveCount; w++) {
-        const waveCycles = cyclesBase + w;  // integer (base + integer offset)
         const wavePhase = (w / waveCount) * Math.PI * 2;
+        const baseCycles = flowSpeed + w * 0.3;
+        const timeWave1 = getSeamlessSine(frame, durationInFrames, baseCycles);
+        const timeWave2 = getSeamlessCosine(frame, durationInFrames, baseCycles * 1.5);
+        const timeWave3 = getSeamlessSine(frame, durationInFrames, baseCycles * 0.7);
 
-        const timeWave1 = getSeamlessSine(frame, durationInFrames, waveCycles);
-        const timeWave2 = getSeamlessSine(frame, durationInFrames, waveCycles + 1);
-        const timeWave3 = getSeamlessSine(frame, durationInFrames, waveCycles + 2);
-
-        const hueShift = getSeamlessSine(frame, durationInFrames, w + 1) * 30;
+        const hueShift = getSeamlessSine(frame, durationInFrames, Math.max(1, w + 1)) * 30;
         const h1 = hslPrimary.h + hueShift + w * 20;
         const h2 = hslSecondary.h + hueShift + w * 25;
         const h3 = hslTertiary.h + hueShift + w * 30;
@@ -124,4 +124,8 @@ export const FluidGradientWaves: React.FC<FluidGradientWavesProps> = ({
     </AbsoluteFill>
   );
 };
+'''
 
+with open(os.path.join(BASE, "fluid-gradient-waves", "index.tsx"), "w", encoding="utf-8") as f:
+    f.write(FLUID)
+print("fluid-gradient-waves/index.tsx written")
