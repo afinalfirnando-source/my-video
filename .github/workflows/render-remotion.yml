@@ -1,0 +1,145 @@
+name: Render Remotion Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      composition_id:
+        description: "Remotion Composition ID (e.g. FluidGradientWaves-001)"
+        required: true
+        type: string
+        default: "FluidGradientWaves-001"
+      props_json:
+        description: "Props JSON string"
+        required: true
+        type: string
+        default: '{"primaryColor":"#00F0FF","secondaryColor":"#FF00E0","tertiaryColor":"#7B2FFF","backgroundColor":"#000011","waveCount":3,"flowSpeed":1.0,"amplitude":1.0,"glowIntensity":0.7}'
+      job_id:
+        description: "Unique job identifier (e.g. fgw_20260912_001)"
+        required: true
+        type: string
+        default: "test_001"
+
+env:
+  OUTPUT_NAME: render_${{ inputs.job_id }}.mp4
+  PROPS_FILE: props_${{ inputs.job_id }}.json
+
+jobs:
+  render:
+    name: Render ${{ inputs.job_id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: my-video
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: my-video/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install FFmpeg + Python image deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          pip3 install Pillow numpy
+
+      - name: Write props JSON to file
+        run: |
+          cat > "$PROPS_FILE" << 'JSONEOF'
+          ${{ inputs.props_json }}
+          JSONEOF
+          echo "Props file written:"
+          cat "$PROPS_FILE"
+
+      - name: Render full video (4K 60fps 900 frames)
+        run: |
+          npx remotion render "${{ inputs.composition_id }}" "$OUTPUT_NAME" \
+            --props="$PROPS_FILE" \
+            --codec=h264 \
+            --width=3840 \
+            --height=2160 \
+            --fps=60 \
+            --bitrate=100M \
+            --output-format=mp4
+
+      - name: Report media info
+        run: |
+          echo "=== Media info for $OUTPUT_NAME ==="
+          ffprobe -v error -show_entries format=duration,size,bit_rate -show_entries stream=nb_frames,width,height,codec_name -of default=noprint_wrappers=1 "$OUTPUT_NAME"
+
+      - name: Quality gate — render PNG reference frames (remotion still)
+        run: |
+          echo "Rendering frame 0 as PNG (verification reference)..."
+          npx remotion still "${{ inputs.composition_id }}" frame_000.png \
+            --frame=0 \
+            --props="$PROPS_FILE" \
+            --width=640 \
+            --height=360
+
+          echo "Rendering frame 899 as PNG (verification reference)..."
+          npx remotion still "${{ inputs.composition_id }}" frame_899.png \
+            --frame=899 \
+            --props="$PROPS_FILE" \
+            --width=640 \
+            --height=360
+
+      - name: Quality gate — pixel-level MSE verification
+        run: |
+          echo "=== Seamless loop verification (PNG level) ==="
+          python3 << 'PYEOF'
+import sys
+from PIL import Image
+import numpy as np
+
+frame0 = np.array(Image.open("frame_000.png").convert("RGB")).astype(np.float64)
+frame899 = np.array(Image.open("frame_899.png").convert("RGB")).astype(np.float64)
+
+if frame0.shape != frame899.shape:
+    print(f"FAIL: Resolution mismatch {frame0.shape} vs {frame899.shape}")
+    sys.exit(1)
+
+mse = float(np.mean((frame0 - frame899) ** 2))
+rmse = float(np.sqrt(mse))
+max_diff = float(np.max(np.abs(frame0 - frame899)))
+
+print(f"MSE (frame 0 vs 899): {mse:.10f}")
+print(f"RMSE: {rmse:.6f}")
+print(f"Max pixel diff: {max_diff:.2f}")
+
+if mse > 0.1:
+    print(f"FAIL: MSE {mse:.6f} exceeds threshold 0.1")
+    print("Seamless loop MATH error detected - regenerate with different props")
+    sys.exit(1)
+
+print("PASS: Seamless loop verified at PNG level (MSE = {:.10f})".format(mse))
+PYEOF
+
+      - name: Clean up props file
+        if: always()
+        run: rm -f "$PROPS_FILE"
+
+      - name: Upload rendered video
+        uses: actions/upload-artifact@v4
+        with:
+          name: render_${{ inputs.job_id }}
+          path: ${{ env.OUTPUT_NAME }}
+          retention-days: 14
+
+      - name: Upload verification frames
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frames_${{ inputs.job_id }}
+          path: |
+            frame_000.png
+            frame_899.png
+          retention-days: 7
+          if-no-files-found: ignore

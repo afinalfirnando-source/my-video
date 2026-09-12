@@ -7,3 +7,10 @@ build
 # Ignore the output video from Git but not videos you import into src/.
 out
 output
+
+# AI Director pipeline outputs — local-only
+pond5-ready/
+jobs/
+test-output/
+test-comparison/
+

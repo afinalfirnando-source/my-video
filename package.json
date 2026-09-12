@@ -1,17 +1,19 @@
 {
   "name": "my-video",
-  "version": "1.0.0",
-  "description": "My Remotion video",
+  "version": "2.0.0",
+  "description": "Professional seamless loop video templates built with Remotion",
   "repository": {},
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
     "@remotion/cli": "4.0.521",
     "@remotion/tailwind-v4": "4.0.521",
+    "pngjs": "^7.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.521",
-    "tailwindcss": "4.0.0"
+    "tailwindcss": "4.0.0",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "@remotion/eslint-config-flat": "4.0.521",
@@ -27,9 +29,16 @@
     "dev": "remotion studio",
     "build": "remotion bundle",
     "render": "remotion render",
-    "render:stock": "npm run render LowerThird out/stock-video.mov --codec=prores --width=3840 --height=2160 --fps=30",
-    "render:h264": "npm run render LowerThird out/stock-video.mp4 --codec=h264 --width=3840 --height=2160 --fps=30",
-    "render:batch": "tsx scripts/batch-render.ts",
+    "render:all": "tsx scripts/render-all.ts",
+    "render:single": "tsx scripts/render-single.ts",
+    "render:job": "tsx scripts/render-job.ts",
+    "list": "tsx scripts/generate-list.ts",
+    "orchestrate": "tsx scripts/ai-orchestrator.ts",
+    "orchestrate:single": "tsx scripts/ai-orchestrator.ts --single",
+    "verify:seamless": "tsx scripts/verify-seamless.ts",
+    "verify-loop": "tsx scripts/verify-loop.ts",
+    "list:registry": "tsx scripts/list-registry.ts",
+    "batch": "tsx scripts/run-batch.ts",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc"
   },
