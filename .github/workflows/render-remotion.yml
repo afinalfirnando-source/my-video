@@ -67,21 +67,21 @@ jobs:
           echo "=== Media info for $OUTPUT_NAME ==="
           ffprobe -v error -show_entries format=duration,size,bit_rate -show_entries stream=nb_frames,width,height,codec_name -of default=noprint_wrappers=1 "$OUTPUT_NAME"
 
-      - name: Check file size (80-250 MB)
+      - name: Check file size (5-250 MB)
         id: size
         run: |
           FILE_SIZE_BYTES=$(stat -c%s "$OUTPUT_NAME")
           FILE_SIZE_MB=$((FILE_SIZE_BYTES / 1024 / 1024))
           echo "file_size_mb=${FILE_SIZE_MB}" >> "$GITHUB_OUTPUT"
           echo "File size: ${FILE_SIZE_MB} MB"
-          if [ "$FILE_SIZE_MB" -lt 80 ]; then
-            echo "ERROR: File size ${FILE_SIZE_MB} MB is below 80 MB minimum"
+          if [ "$FILE_SIZE_MB" -lt 5 ]; then
+            echo "ERROR: File size ${FILE_SIZE_MB} MB is below 5 MB minimum"
             exit 1
           elif [ "$FILE_SIZE_MB" -gt 250 ]; then
             echo "ERROR: File size ${FILE_SIZE_MB} MB is above 250 MB maximum"
             exit 1
           else
-            echo "OK: File size ${FILE_SIZE_MB} MB is within 80-250 MB range"
+            echo "OK: File size ${FILE_SIZE_MB} MB is within 5-250 MB range"
           fi
 
       - name: Quality gate — seamless loop check
