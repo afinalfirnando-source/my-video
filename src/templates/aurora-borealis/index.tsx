@@ -134,7 +134,7 @@ export const AuroraBorealis: React.FC<AuroraBorealisProps> = ({
       // Vignette
       applyVignette(ctx, width, height, 0.5);
     };
-  }, [primaryColor, secondaryColor, backgroundColor, curtainCount, waveSpeed, glowIntensity, stars, waveCycles]);
+  }, [primaryColor, secondaryColor, backgroundColor, curtainCount, waveSpeed, glowIntensity, stars]);
 
   const canvasRef = useCanvas(draw);
 
