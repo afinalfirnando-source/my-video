@@ -4,9 +4,8 @@ import type { LiquidChromeProps } from "./types";
 import {
   useCanvas,
   applyVignette,
-  getLoopTime,
   getSeamlessAngle,
-  getSeamlessSine,
+  intCycles,
   seeded,
   TEMPLATE_CONFIG,
 } from "../../shared";
@@ -59,7 +58,8 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       const stepSize = 20;
       for (let x = 0; x < width; x += stepSize) {
         for (let y = 0; y < height; y += stepSize) {
-          const noise = getNoise(x, y, getSeamlessAngle(frame, durationInFrames, flowCycles));
+          const tAngle = getSeamlessAngle(frame, durationInFrames, flowCycles);
+      const noise = getNoise(x, y, tAngle, tAngle, tAngle);
           
           let rippleDistortion = 0;
           for (const ripple of ripples) {

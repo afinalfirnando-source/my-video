@@ -56,7 +56,6 @@ export const ParticleVortex: React.FC<ParticleVortexProps> = ({
       const coreCycles = intCycles(vortexSpeed * 3);
 
       const timeAngle = getSeamlessAngle(frame, D, baseCycles);
-      const coreTimeAngle = getSeamlessAngle(frame, D, coreCycles);
       const armTimeAngle = getSeamlessAngle(frame, D, armCycles);
 
       ctx.fillStyle = backgroundColor;
