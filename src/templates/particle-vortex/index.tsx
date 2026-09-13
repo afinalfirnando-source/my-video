@@ -51,7 +51,6 @@ export const ParticleVortex: React.FC<ParticleVortexProps> = ({
   const draw = useMemo(() => {
     return (ctx: CanvasRenderingContext2D, frame: number, width: number, height: number) => {
       const { durationInFrames: D } = TEMPLATE_CONFIG;
-      const loopT = getLoopTime(frame, D);
       const baseCycles = intCycles(vortexSpeed);
       const armCycles = intCycles(vortexSpeed * 2);
       const coreCycles = intCycles(vortexSpeed * 3);
@@ -116,7 +115,7 @@ export const ParticleVortex: React.FC<ParticleVortexProps> = ({
 
         // Main particle (same hue as trail)
         const particleHue = (particle.hueOffset +
-                            getSeamlessSine(frame, D, coreCycles) * 180) % 360;
+                             getSeamlessSine(frame, D, coreCycles) * 180) % 360;
         ctx.globalAlpha = 0.9;
         ctx.fillStyle = `hsl(${particleHue}, 100%, 70%)`;
         ctx.shadowBlur = 20 * glowIntensity;
@@ -178,93 +177,7 @@ export const ParticleVortex: React.FC<ParticleVortexProps> = ({
 
       applyVignette(ctx, width, height, 0.4);
     };
-  }, [primaryColor, secondaryColor, tertiaryColor, backgroundColor, vortexSpeed, spiralStrength, coreGlow, trailLength, glowIntensity, particles]);alAngle - trailT * 0.3 * intCycles(vortexSpeed);piralAngle - trailT * 0.3 * Math.PI * 2 * intCycles(vortexSpeed);
-          const trailRadius = currentRadius + trailT * 30;
-          const tx = Math.cos(trailAngle) * trailRadius;
-          const ty = Math.sin(trailAngle) * trailRadius;
-
-          const trailAlpha = (1 - trailT) * 0.4;
-          // Seamless hue: +i*60 static, sin(pulseCycles) with offset = 0 at seam
-          const hue = (particle.hueOffset +
-                       Math.sin(getSeamlessAngle(frame, durationInFrames, pulseCycles) + particle.phaseOffset) * 180 +
-                       i * 0) % 360;
-          // Note: + i*0 since we already have hueOffset; using Math.sin(offset) gives per-particle variation
-
-          ctx.globalAlpha = trailAlpha;
-          ctx.fillStyle = `hsl(${hue}, 100%, 60%)`;
-          ctx.shadowBlur = 10 * glowIntensity;
-          ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
-
-          ctx.beginPath();
-          ctx.arc(tx, ty, particle.size * (1 - trailT * 0.5), 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        // Main particle hue (same formula as trail — no need for duplicate)
-        ctx.globalAlpha = 0.9;
-        ctx.fillStyle = `hsl(${hue}, 100%, 70%)`;
-        ctx.shadowBlur = 20 * glowIntensity;
-        ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
-
-        ctx.beginPath();
-        ctx.arc(px, py, particle.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Draw core with pulsing glow
-      // FIX: intCycles(vortexSpeed + 2) → integer, seamless
-      const corePulseCycles = intCycles(vortexSpeed + 2);
-      const corePulse = 0.8 + getSeamlessSine(frame, durationInFrames, corePulseCycles) * 0.2;
-      const coreSize = 200 * corePulse;  // was 40, now 200 (visible at 4K)
-
-      const coreGlowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, coreSize * 4);
-      coreGlowGradient.addColorStop(0, tertiaryColor);
-      coreGlowGradient.addColorStop(0.3, primaryColor);
-      coreGlowGradient.addColorStop(0.6, secondaryColor);
-      coreGlowGradient.addColorStop(1, "transparent");
-
-      ctx.globalAlpha = coreGlow;
-      ctx.fillStyle = coreGlowGradient;
-      ctx.shadowBlur = 60 * coreGlow;
-      ctx.shadowColor = tertiaryColor;
-      ctx.beginPath();
-      ctx.arc(0, 0, coreSize * 4, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Inner bright core
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = "#FFFFFF";
-      ctx.shadowBlur = 30;
-      ctx.shadowColor = "#FFFFFF";
-      ctx.beginPath();
-      ctx.arc(0, 0, coreSize * 0.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Draw rotating spiral arms
-      ctx.globalAlpha = 0.3;
-      ctx.strokeStyle = primaryColor;
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = primaryColor;
-
-      for (let arm = 0; arm < 4; arm++) {
-        const armOffset = (arm / 4) * Math.PI * 2;
-        ctx.beginPath();
-        for (let r = 0; r < 400; r += 5) {
-          const angle = armOffset + (r / 400) * Math.PI * 4 + armTimeAngle;
-          const x = Math.cos(angle) * r;
-          const y = Math.sin(angle) * r;
-          if (r === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.stroke();
-      }
-
-      ctx.restore();
-
-      applyVignette(ctx, width, height, 0.4);
-    };
-    }, [primaryColor, secondaryColor, tertiaryColor, backgroundColor, vortexSpeed, spiralStrength, coreGlow, trailLength, glowIntensity, particles]);
+  }, [primaryColor, secondaryColor, tertiaryColor, backgroundColor, vortexSpeed, spiralStrength, coreGlow, trailLength, glowIntensity, particles]);
 
   const canvasRef = useCanvas(draw);
 
