@@ -103,22 +103,7 @@ jobs:
       - name: Verify seamless loop (MSE frame 0 vs 899)
         run: |
           if [ -f /tmp/frame0.png ] && [ -f /tmp/frame899.png ]; then
-            python3 -c "
-            import sys
-            from PIL import Image
-            import numpy as np
-            img1 = np.array(Image.open('/tmp/frame0.png').convert('RGB')).astype(np.float64)
-            img2 = np.array(Image.open('/tmp/frame899.png').convert('RGB')).astype(np.float64)
-            if img1.shape != img2.shape:
-              print(f'FAIL: Resolution mismatch {img1.shape} vs {img2.shape}')
-              sys.exit(1)
-            mse = float(np.mean((img1 - img2) ** 2))
-            print(f'Seamless MSE (frame 0 vs 899): {mse:.6f}')
-            if mse > 5.0:
-              print(f'FAIL: MSE {mse:.6f} exceeds threshold 5.0')
-              sys.exit(1)
-            print('PASS: Seamless loop verified')
-            "
+            python3 scripts/check-seamless.py /tmp/frame0.png /tmp/frame899.png 5.0
           else
             echo "::warning::Could not extract frames for comparison"
             exit 0
