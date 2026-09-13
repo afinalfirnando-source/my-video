@@ -8,6 +8,7 @@ import {
   getSeamlessAngle,
   intCycles,
   getSeamlessSine,
+  mod,
   TEMPLATE_CONFIG,
 } from "../../shared";
 
@@ -60,7 +61,7 @@ export const NeonGridTunnel: React.FC<NeonGridTunnelProps> = ({
       // Draw perspective grid lines
       for (let i = -gridDepth; i <= gridDepth; i++) {
         // Z position - seamless scrolling with integer scroll distance
-        const zRaw = (i * spacing + loopTime * scrollDist) % totalRange;
+        const zRaw = mod(i * spacing + loopTime * scrollDist, totalRange);
         const z = zRaw - gridDepth * spacing;
         
         const scale = fov / (fov + Math.abs(z));
