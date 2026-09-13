@@ -45,10 +45,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install FFmpeg
+      - name: Install system dependencies (FFmpeg + Python libs)
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
+          python3 -m pip install --quiet Pillow numpy
 
       - name: Render ${{ matrix.composition_id }} (4K 60fps 900 frames)
         run: |
@@ -90,31 +91,37 @@ jobs:
             exit 1
           fi
 
-      - name: Seamless loop verification (frame 0 vs 899)
+      - name: Extract comparison frames
         run: |
           FILE="${{ env.OUTPUT_FILE }}"
           if [ -f "$FILE" ]; then
             ffmpeg -y -i "$FILE" -vf "select=eq(n\,0)" -vframes 1 /tmp/frame0.png 2>/dev/null || true
             ffmpeg -y -i "$FILE" -vf "select=eq(n\,899)" -vframes 1 /tmp/frame899.png 2>/dev/null || true
-            if [ -f /tmp/frame0.png ] && [ -f /tmp/frame899.png ]; then
-              python3 -c "
+            ls -la /tmp/frame0.png /tmp/frame899.png || true
+          fi
+
+      - name: Verify seamless loop (MSE frame 0 vs 899)
+        run: |
+          if [ -f /tmp/frame0.png ] && [ -f /tmp/frame899.png ]; then
+            python3 << 'PYEOF'
 import sys
 from PIL import Image
 import numpy as np
+
 img1 = np.array(Image.open('/tmp/frame0.png').convert('RGB')).astype(np.float64)
 img2 = np.array(Image.open('/tmp/frame899.png').convert('RGB')).astype(np.float64)
 mse = float(np.mean((img1 - img2) ** 2))
-print(f'Seamless MSE (frame 0 vs 899): {mse:.6f}')
-if mse > 0.5:
-    print('WARNING: MSE exceeds 0.5 threshold - possible visible seam')
-    sys.exit(0)
-else:
+print(f'MSE (frame 0 vs 899): {mse:.6f}')
+if mse <= 0.5:
     print('PASS: Seamless loop verified (MSE <= 0.5)')
     sys.exit(0)
-"
-            else
-              echo "::warning::Could not extract frame 0 and 899 for comparison"
-            fi
+else:
+    print('WARNING: MSE exceeds 0.5 threshold - possible visible seam')
+    sys.exit(1)
+PYEOF
+          else
+            echo "::warning::Could not extract frames for comparison"
+            exit 0
           fi
 
       - name: Upload artifact
